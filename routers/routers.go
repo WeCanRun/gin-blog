@@ -1,7 +1,6 @@
 package routers
 
 import (
-	_ "github.com/WeCanRun/gin-blog/docs"
 	"github.com/WeCanRun/gin-blog/middleware"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	v1 "github.com/WeCanRun/gin-blog/routers/v1"
@@ -12,7 +11,7 @@ func InitRouters() *gin.Engine {
 	router := gin.Default()
 	gin.SetMode(setting.RunMode)
 
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	//router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.GET("/ping", v1.Ping)
 	// auth
