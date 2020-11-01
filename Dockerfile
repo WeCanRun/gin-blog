@@ -1,5 +1,4 @@
-FROM golang:1.15
-
+FROM hub.c.163.com/library/golang
 ENV  GOPROXY https://goproxy.cn,direct
 WORKDIR $GOPATH/src/github.com/WeCanRun/gin-blog
 COPY . $GOPATH/src/github.com/WeCanRun/gin-blog
