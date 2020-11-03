@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var jwtSecret = []byte(setting.JwtSecret)
+var jwtSecret = []byte(setting.App.JwtSecret)
 
 type Claims struct {
 	Username string `json:"username"`
@@ -30,7 +30,7 @@ func GenerateToken(userName, password string) (token string, err error) {
 	return
 }
 
-func ParseToken(token string) (*Claims, error)  {
+func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (i interface{}, err error) {
 		return jwtSecret, nil
 	})

@@ -9,7 +9,7 @@ import (
 
 func InitRouters() *gin.Engine {
 	router := gin.Default()
-	gin.SetMode(setting.RunMode)
+	gin.SetMode(setting.Server.RunMode)
 
 	//router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

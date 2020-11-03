@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/WeCanRun/gin-blog/models"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/routers"
+	"github.com/robfig/cron"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,19 +15,40 @@ import (
 )
 
 func main() {
+	//加载配置文件
+	setting.Setup()
+	// 加载数据库
+	models.Setup()
+	// 加载日志配置
+	logging.Setup()
 	router := routers.InitRouters()
 	s := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.HttpPort),
+		Addr:           fmt.Sprintf(":%d", setting.Server.HttpPort),
 		Handler:        router,
-		ReadTimeout:    setting.ReadTimeOut,
-		WriteTimeout:   setting.WriteTimeOut,
+		ReadTimeout:    setting.Server.ReadTimeout,
+		WriteTimeout:   setting.Server.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 
+	// 启动服务
 	go func() {
 		if err := s.ListenAndServe(); err != nil {
 			logging.Error("Listen:%s", err)
 		}
+	}()
+
+	// 定时任务
+	go func() {
+		logging.Info("Starting...Cron Job")
+		c := cron.New()
+		c.AddFunc("1-59/10 * * * * *", func() {
+			logging.Info("begin exec job1...")
+		})
+		c.AddFunc("1,11,41,51 * * * * *", func() {
+			logging.Info("begin exec job2...")
+		})
+		c.Start()
+		select {}
 	}()
 
 	quit := make(chan os.Signal)
@@ -40,5 +63,5 @@ func main() {
 	if err := s.Shutdown(timeout); err != nil {
 		logging.Error("server shutdown err", err)
 	}
-	logging.Info("Server exiting")
+	logging.Info("server exiting")
 }

@@ -10,6 +10,7 @@ replace (
 	github.com/WeCanRun/gin-blog/pkg/logging => ./pkg/logging
 	github.com/WeCanRun/gin-blog/pkg/setting => ./pkg/setting
 	github.com/WeCanRun/gin-blog/pkg/util => ./pkg/util
+	github.com/WeCanRun/gin-blog/pkg/file => ./pkg/file
 	github.com/WeCanRun/gin-blog/routers => ./routers
 )
 
@@ -19,6 +20,7 @@ require (
 	github.com/go-ini/ini v1.62.0
 	github.com/go-playground/assert/v2 v2.0.1
 	github.com/jinzhu/gorm v1.9.16
+	github.com/robfig/cron v1.2.0
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/unknwon/com v1.0.1
 	gopkg.in/ini.v1 v1.62.0 // indirect

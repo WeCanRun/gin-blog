@@ -1,79 +1,86 @@
 package setting
 
 import (
-	"github.com/WeCanRun/gin-blog/pkg/logging"
+	"github.com/go-ini/ini"
 	"log"
 	"time"
 )
-import "github.com/go-ini/ini"
+
+type app struct {
+	JwtSecret       string   `json:"jwt_secret"`
+	PageSize        uint     `json:"page_size"`
+	RuntimeRootPath string   `json:"runtime_root_path"`
+	ImagePrefixUrl  string   `json:"image_prefix_url"`
+	ImageSavePath   string   `json:"image_save_path"`
+	ImageMaxSize    uint     `json:"image_max_size"`
+	ImageAllowExts  []string `json:"image_allow_exts"`
+	LogSavePath     string   `json:"log_save_path"`
+	LogSaveName     string   `json:"log_save_name"`
+	LogFileExt      string   `json:"log_file_ext"`
+	TimeFormat      string   `json:"time_format"`
+}
+
+type server struct {
+	RunMode      string        `json:"run_mode"`
+	HttpPort     int           `json:"http_port"`
+	ReadTimeout  time.Duration `json:"read_timeout"`
+	WriteTimeout time.Duration `json:"write_timeout"`
+}
+
+type database struct {
+	Type        string `json:"type"`
+	User        string `json:"user"`
+	Password    string `json:"password"`
+	Host        string `json:"host"`
+	DbName      string `json:"db_name"`
+	TablePrefix string `json:"table_prefix"`
+}
 
 const (
-	base     = "base"
-	server   = "server"
-	app      = "app"
-	database = "database"
+	SERVER   = "server"
+	APP      = "app"
+	DATABASE = "database"
 )
 
 var (
-	// [base]
-	Cfg     *ini.File
-	RunMode string
-	// [server]
-	HttpPort     int
-	ReadTimeOut  time.Duration
-	WriteTimeOut time.Duration
-	// [app]
-	PageSize  uint
-	JwtSecret string
-	// [database]
-	DbType, DbName, User, Password, Host, TablePrefix string
+	Database = &database{}
+	Server   = &server{}
+	App      = &app{}
+	Cfg      *ini.File
 )
 
-func init() {
+func Setup() {
 	var err error
 	Cfg, err = ini.Load("./conf/app.ini")
 	if err != nil {
-		logging.Fatal("Fail to parse 'conf/app.ini': %v", err)
+		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
 	}
-
-	LoadBase()
 	LoadDataBase()
 	LoadServer()
 	LoadApp()
 }
 
 func LoadDataBase() {
-	sec, err := Cfg.GetSection(database)
+	err := Cfg.Section(DATABASE).MapTo(Database)
 	if err != nil {
-		log.Fatalf("fail to get setion %s: %v", database, err)
+		log.Fatalf("Cfg.MapTo App fail: %v, %v", DATABASE, err)
 	}
-	DbType = sec.Key("TYPE").String()
-	DbName = sec.Key("NAME").String()
-	User = sec.Key("USER").String()
-	Password = sec.Key("PASSWORD").String()
-	Host = sec.Key("HOST").String()
-	TablePrefix = sec.Key("TABLE_PREFIX").String()
-}
-
-func LoadBase() {
-	RunMode = Cfg.Section("").Key("RUN_MODE").MustString("debug")
 }
 
 func LoadServer() {
-	sec, err := Cfg.GetSection("server")
+	err := Cfg.Section(SERVER).MapTo(Server)
 	if err != nil {
-		log.Fatalf("fail to get setion 'server': %v", err)
+		log.Fatalf("Cfg.MapTo App fail: %v, %v", SERVER, err)
 	}
-	HttpPort = sec.Key("HTTP_PORT").MustInt(8000)
-	ReadTimeOut = time.Duration(sec.Key("READ_TIMEOUT").MustInt(60)) * time.Second
-	WriteTimeOut = time.Duration(sec.Key("WRITE_TIMEOUT").MustInt(60)) * time.Second
+	Server.ReadTimeout *= time.Second
+	Server.WriteTimeout *= time.Second
 }
 
 func LoadApp() {
-	sec, err := Cfg.GetSection("app")
+	err := Cfg.Section(APP).MapTo(App)
 	if err != nil {
-		log.Fatalf("fail to get setion 'app': %v", err)
+		log.Fatalf("Cfg.MapTo App fail: %v,%v", APP, err)
 	}
-	JwtSecret = sec.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
-	PageSize = uint(sec.Key("PAGE_SIZE").MustInt(10))
+
+	App.ImageMaxSize *= 1024 * 1024
 }

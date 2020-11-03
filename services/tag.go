@@ -18,7 +18,7 @@ func GetTags(c *gin.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse
 		pageNum = util.GetPage(c)
 	}
 	if pageSize <= 0 {
-		pageSize = setting.PageSize
+		pageSize = setting.App.PageSize
 	}
 
 	tags, err := models.GetTags(pageNum, pageSize)

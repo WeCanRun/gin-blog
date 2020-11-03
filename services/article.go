@@ -16,7 +16,7 @@ func GetArticles(ctx *gin.Context, req *dto.GetArticlesRequest) (resp dto.GetArt
 		pageNum = util.GetPage(ctx)
 	}
 	if pageSize <= 0 {
-		pageSize = setting.PageSize
+		pageSize = setting.App.PageSize
 	}
 	articles, err := models.GetArticles(pageNum, pageSize)
 	if err != nil {
