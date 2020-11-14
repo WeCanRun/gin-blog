@@ -21,11 +21,13 @@ type commonRequest struct {
 
 type AddArticleRequest struct {
 	commonRequest
-	CreatedBy string `json:"created_by"`
+	CreatedBy     string `json:"created_by"`
+	CoverImageUrl string `json:"cover_image_url"`
 }
 
 type EditArticleRequest struct {
 	ID uint `json:"id" binding:"required"`
 	commonRequest
-	UpdatedBy string `json:"updated_by"`
+	CoverImageUrl string `json:"cover_image_url"`
+	UpdatedBy     string `json:"updated_by"`
 }

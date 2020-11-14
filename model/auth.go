@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"log"
@@ -14,7 +14,7 @@ func CreteTable() error {
 	return db.CreateTable(&Auth{}).Error
 }
 
-func AddAuth(username, password string) error  {
+func AddAuth(username, password string) error {
 	return db.Create(&Auth{
 		Username: username,
 		Password: password,

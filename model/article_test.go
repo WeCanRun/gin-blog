@@ -1,16 +1,30 @@
-package models
+package model
 
 import (
+	"github.com/WeCanRun/gin-blog/pkg/logging"
+	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/go-playground/assert/v2"
 	"github.com/jinzhu/gorm"
 	"testing"
 	"time"
 )
 
+func init() {
+	setting.Setup("../conf/app.ini")
+	logging.Setup()
+	Setup()
+}
+
+func TestAddData(t *testing.T) {
+	for i := 0; i < 5; i++ {
+		TestAddArticle(t)
+		TestAddTag(t)
+	}
+}
+
 func TestAddArticle(t *testing.T) {
 	article := Article{
 		Model: gorm.Model{
-			ID:        2,
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 			DeletedAt: nil,
@@ -26,8 +40,8 @@ func TestAddArticle(t *testing.T) {
 	if err != nil {
 		t.Log("err: ", err)
 	}
-	newArticle, _ := GetArticleById(article.ID)
-	assert.Equal(t, newArticle.ID, article.ID)
+	newArticle, _ := GetArticleById(1)
+	assert.Equal(t, newArticle.ID, 1)
 }
 
 func TestGetArticleById(t *testing.T) {

@@ -36,47 +36,66 @@ type database struct {
 	TablePrefix string `json:"table_prefix"`
 }
 
+type redis struct {
+	Host        string        `json:"host"`
+	Password    string        `json:"password"`
+	MaxIdle     int           `json:"max_idle"`
+	MaxActive   int           `json:"max_active"`
+	IdleTimeout time.Duration `json:"idle_timeout"`
+}
+
 const (
 	SERVER   = "server"
 	APP      = "app"
 	DATABASE = "database"
+	REDIS    = "redis"
 )
 
 var (
+	Redis    = &redis{}
 	Database = &database{}
 	Server   = &server{}
 	App      = &app{}
 	Cfg      *ini.File
 )
 
-func Setup() {
+func Setup(path string) {
 	var err error
-	Cfg, err = ini.Load("./conf/app.ini")
+	Cfg, err = ini.Load(path)
 	if err != nil {
 		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
 	}
-	LoadDataBase()
-	LoadServer()
-	LoadApp()
+	loadDataBase()
+	loadServer()
+	loadApp()
+	loadRedis()
 }
 
-func LoadDataBase() {
+func loadRedis() {
+	err := Cfg.Section(REDIS).MapTo(Redis)
+	if err != nil {
+		log.Fatalf("Cfg.MapTo Redis fail: %v, %v", REDIS, err)
+	}
+	Redis.IdleTimeout *= time.Second
+}
+
+func loadDataBase() {
 	err := Cfg.Section(DATABASE).MapTo(Database)
 	if err != nil {
-		log.Fatalf("Cfg.MapTo App fail: %v, %v", DATABASE, err)
+		log.Fatalf("Cfg.MapTo Database fail: %v, %v", DATABASE, err)
 	}
 }
 
-func LoadServer() {
+func loadServer() {
 	err := Cfg.Section(SERVER).MapTo(Server)
 	if err != nil {
-		log.Fatalf("Cfg.MapTo App fail: %v, %v", SERVER, err)
+		log.Fatalf("Cfg.MapTo Server fail: %v, %v", SERVER, err)
 	}
 	Server.ReadTimeout *= time.Second
 	Server.WriteTimeout *= time.Second
 }
 
-func LoadApp() {
+func loadApp() {
 	err := Cfg.Section(APP).MapTo(App)
 	if err != nil {
 		log.Fatalf("Cfg.MapTo App fail: %v,%v", APP, err)

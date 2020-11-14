@@ -1,14 +1,14 @@
-package services
+package service
 
 import (
-	"github.com/WeCanRun/gin-blog/models"
+	"github.com/WeCanRun/gin-blog/model"
 	"github.com/WeCanRun/gin-blog/pkg/e"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/util"
 )
 
 func GetTokenWithAuth(username, password string) (code int, token string) {
-	ok := models.CheckAuth(username, password)
+	ok := model.CheckAuth(username, password)
 	if !ok {
 		code = e.ERROR_AUTH
 		logging.Error("GetTokenWithAuth#CheckAuth fail")

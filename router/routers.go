@@ -1,10 +1,12 @@
-package routers
+package router
 
 import (
 	"github.com/WeCanRun/gin-blog/middleware"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
-	v1 "github.com/WeCanRun/gin-blog/routers/v1"
+	"github.com/WeCanRun/gin-blog/pkg/upload"
+	v1 "github.com/WeCanRun/gin-blog/router/v1"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func InitRouters() *gin.Engine {
@@ -14,10 +16,16 @@ func InitRouters() *gin.Engine {
 	//router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.GET("/ping", v1.Ping)
+
+	router.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+
 	// auth
 	router.GET("/auth", v1.GetToken)
-	router.Use(middleware.JWT())
 
+	// upload
+	router.POST("/image", v1.UploadImage)
+
+	router.Use(middleware.JWT())
 	apiV1 := router.Group("/api/v1")
 	{
 		// tag

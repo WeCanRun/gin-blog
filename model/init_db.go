@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ func Setup() {
 		setting.Database.Host,
 		setting.Database.DbName)
 	db, err = gorm.Open(setting.Database.Type, dbStr)
-	if err != nil {
+	if err != nil || db == nil {
 		logging.Fatal("db init fail, dbStr: %s, err: %v", dbStr, err)
 	}
 

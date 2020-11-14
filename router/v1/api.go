@@ -4,7 +4,7 @@ import (
 	"github.com/WeCanRun/gin-blog/dto"
 	"github.com/WeCanRun/gin-blog/pkg/e"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
-	"github.com/WeCanRun/gin-blog/services"
+	"github.com/WeCanRun/gin-blog/service"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"strconv"
@@ -24,7 +24,7 @@ func GetTags(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	data, err := services.GetTags(ctx, req)
+	data, err := service.GetTags(ctx, req)
 	if err != nil {
 		logging.Error("services#GetTags fail,%v", err)
 		e.ServerError(ctx, "获取标签列表失败")
@@ -43,7 +43,7 @@ func GetTag(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	tag, err := services.GetTag(ctx, uint(id))
+	tag, err := service.GetTag(ctx, uint(id))
 	if err != nil {
 		logging.Error("services#GetTag err, %v", err)
 		if gorm.IsRecordNotFoundError(err) {
@@ -70,7 +70,7 @@ func AddTag(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	var err = services.AddTag(ctx, req)
+	var err = service.AddTag(ctx, req)
 	if err != nil {
 		logging.Error("services#AddTags fail,%v", err)
 		e.ServerError(ctx, "增加标签失败")
@@ -90,7 +90,7 @@ func DeleteTag(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	if err = services.DeleteTag(ctx, id); err != nil {
+	if err = service.DeleteTag(ctx, uint(id)); err != nil {
 		logging.Error("services#DeleteTag fail,%v", err)
 		e.ServerError(ctx, "删除标签失败")
 		return
@@ -107,7 +107,7 @@ func EditTag(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	if err := services.EditTag(ctx, req); err != nil {
+	if err := service.EditTag(ctx, req); err != nil {
 		logging.Error("services#EditTag fail,%v", err)
 		e.ServerError(ctx, "编辑标签失败")
 		return
@@ -123,7 +123,7 @@ func GetArticles(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	resp, err := services.GetArticles(ctx, req)
+	resp, err := service.GetArticles(ctx, req)
 	if err != nil {
 		logging.Error("services#GetArticles fail,%v", err)
 		e.ServerError(ctx, "获取文章列表失败")
@@ -141,7 +141,7 @@ func GetArticle(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	article, err := services.GetArticle(ctx, uint(id))
+	article, err := service.GetArticle(ctx, uint(id))
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			e.OtherError(ctx, e.ERROR_NOT_EXIST_ARTICLE)
@@ -162,7 +162,7 @@ func AddArticle(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	if err := services.AddArticle(ctx, req); err != nil {
+	if err := service.AddArticle(ctx, req); err != nil {
 		logging.Error("services#AddArticle fail,%v", err)
 		e.ServerError(ctx, "新增文章失败")
 		return
@@ -178,7 +178,7 @@ func EditArticle(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	if err := services.EditArticle(ctx, req); err != nil {
+	if err := service.EditArticle(ctx, req); err != nil {
 		logging.Error("services#EditArticle fail,%v", err)
 		e.ServerError(ctx, "编辑文章失败")
 		return
@@ -195,7 +195,7 @@ func DeleteArticle(ctx *gin.Context) {
 		e.ParamsError(ctx)
 		return
 	}
-	if err := services.DeleteArticle(ctx, uint(id)); err != nil {
+	if err := service.DeleteArticle(ctx, uint(id)); err != nil {
 		logging.Error("services#DeleteArticle fail,%v", err)
 		e.ServerError(ctx, "删除文章失败")
 	}
@@ -210,10 +210,27 @@ func GetToken(ctx *gin.Context) {
 		logging.Error("GetToken params err")
 		return
 	}
-	code, token := services.GetTokenWithAuth(username, password)
+	code, token := service.GetTokenWithAuth(username, password)
 	if len(token) <= 0 {
 		e.OtherError(ctx, code)
 		return
 	}
 	e.Success(ctx, map[string]string{"token": token})
+}
+
+// 上传图片
+func UploadImage(ctx *gin.Context) {
+	file, image, err := ctx.Request.FormFile("image")
+	if err != nil || image == nil {
+		logging.Error("param err: %v, image:%v", err, image)
+		e.ParamsError(ctx)
+		return
+	}
+
+	data, code, err := service.UploadImage(ctx, file, image)
+	if err != nil || code != 0 {
+		e.OtherError(ctx, code)
+		return
+	}
+	e.Success(ctx, data)
 }

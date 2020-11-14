@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"github.com/jinzhu/gorm"
@@ -7,13 +7,14 @@ import (
 
 type Article struct {
 	gorm.Model
-	TagId     uint    `json:"tag_id"` // 与之关联的标签
-	Title     string `json:"title"`
-	Desc      string `json:"desc"`    //文章描述
-	Content   string `json:"content"` //文章内容
-	CreatedBy string `json:"created_by"`
-	UpdatedBy string `json:"updated_by"`
-	State     int    `json:"state"` // 状态，0 禁用， 1 启用
+	TagId         uint   `json:"tag_id"` // 与之关联的标签
+	Title         string `json:"title"`
+	Desc          string `json:"desc"`            //文章描述
+	Content       string `json:"content"`         //文章内容
+	CoverImageUrl string `json:"cover_image_url"` // 上传的图片地址
+	CreatedBy     string `json:"created_by"`
+	UpdatedBy     string `json:"updated_by"`
+	State         int    `json:"state"` // 状态，0 禁用， 1 启用
 }
 
 func GetArticles(pageNum, pageSize uint) (articles []Article, err error) {

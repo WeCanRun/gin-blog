@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"github.com/jinzhu/gorm"
@@ -43,7 +43,7 @@ func GetTagTotal(name string) (count int, err error) {
 	err = db.Model(Tag{}).Where("name = ?", name).Count(&count).Error
 	return
 }
-func DeleteTag(id int) (err error) {
+func DeleteTag(id uint) (err error) {
 	return db.Model(Tag{}).Where("id = ?", id).Update("deleted_at", time.Now()).Error
 }
 
