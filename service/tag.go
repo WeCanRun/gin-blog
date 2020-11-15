@@ -2,14 +2,21 @@ package service
 
 import (
 	"errors"
+	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/WeCanRun/gin-blog/dto"
 	"github.com/WeCanRun/gin-blog/model"
+	"github.com/WeCanRun/gin-blog/pkg/export"
+	"github.com/WeCanRun/gin-blog/pkg/file"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/util"
 	"github.com/WeCanRun/gin-blog/service/cache_service"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/tealeg/xlsx"
+	"io"
+	"strconv"
+	"time"
 )
 
 func GetTags(c *gin.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse, err error) {
@@ -119,5 +126,99 @@ func EditTag(ctx *gin.Context, request *dto.EditRequest) (err error) {
 		logging.Error("EditTag | cache_service.SetTagCacheById fail, err%v", err)
 	}
 
+	return nil
+}
+
+// 根据名字导出标签
+func ExportTags(name string, state int) (dto.ExportTagsResponse, error) {
+	tags, err := model.GetTagsByName(name)
+	if err != nil {
+		logging.Error("ExportTags |  model.GetTagsByName fail, err:%v", err)
+		return dto.ExportTagsResponse{}, err
+	}
+
+	excel := xlsx.NewFile()
+	sheet, err := excel.AddSheet("标签信息")
+	if err != nil {
+		logging.Error("ExportTags | excel.AddSheet fail, err%v", err)
+		return dto.ExportTagsResponse{}, err
+	}
+	// 写入标题行
+	titles := []string{"ID", "名称", "创建人", "创建时间", "修改人", "修改时间"}
+	row := sheet.AddRow()
+	var cell *xlsx.Cell
+	for _, title := range titles {
+		cell = row.AddCell()
+		cell.Value = title
+	}
+
+	// 写入内容
+	for _, tag := range tags {
+		values := []string{
+			strconv.Itoa(int(tag.ID)),
+			tag.Name,
+			tag.CreatedBy,
+			strconv.Itoa(int(tag.CreatedAt.Unix())),
+			tag.UpdatedBy,
+			strconv.Itoa(int(tag.UpdatedAt.Unix())),
+		}
+		row := sheet.AddRow()
+		for _, value := range values {
+			row.AddCell().Value = value
+		}
+	}
+
+	// 创建保存的目录
+	excelPath := export.GetExcelRealDir()
+	err = file.IsNotExitMKDir(excelPath)
+	if err != nil {
+		logging.Error("ExportTags | file.IsNotExitMKDir fail, err%v", err)
+		return dto.ExportTagsResponse{}, err
+	}
+
+	// 构建文件名
+	exportName := export.ExportExcelName(name, time.Now())
+	fullName := export.GetExcelRealPath(exportName)
+	err = excel.Save(fullName)
+	if err != nil {
+		logging.Error("ExportTags | excel.Save fail, err%v", err)
+	}
+
+	response := dto.ExportTagsResponse{
+		ExportFullUrl: export.GetExcelFullUrl(exportName),
+		ExportSaveUrl: export.GetExcelSaveUrl(exportName),
+	}
+	return response, err
+}
+
+// 导入标签信息
+func ImportTags(r io.Reader) error {
+	excel, err := excelize.OpenReader(r)
+	if err != nil {
+		logging.Error("ImportTags | excelize.OpenReader fail, err:%v", err)
+		return err
+	}
+	rows, err := excel.GetRows("标签信息")
+	if err != nil {
+		logging.Error("ImportTags | GetRows fail, err:%v ", err)
+	}
+
+	for i, row := range rows {
+		if i > 0 {
+			var data []string
+			for _, cell := range row {
+				data = append(data, cell)
+			}
+			if len(data) < 2 {
+				logging.Error("ImportTags | 数据解析错误, data:%v", data)
+				continue
+			}
+			model.AddTag(model.Tag{
+				Name:      data[1],
+				CreatedBy: data[2],
+				State:     1,
+			})
+		}
+	}
 	return nil
 }

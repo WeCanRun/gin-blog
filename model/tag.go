@@ -39,10 +39,11 @@ func GetTags(pageNum uint, pageSize uint) (tags []Tag, err error) {
 	return
 }
 
-func GetTagTotal(name string) (count int, err error) {
-	err = db.Model(Tag{}).Where("name = ?", name).Count(&count).Error
+func GetTagsByName(name string) (tags []Tag, err error) {
+	err = db.Model(Tag{}).Where("name = ?", name).Find(&tags).Error
 	return
 }
+
 func DeleteTag(id uint) (err error) {
 	return db.Model(Tag{}).Where("id = ?", id).Update("deleted_at", time.Now()).Error
 }

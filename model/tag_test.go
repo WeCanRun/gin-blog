@@ -48,11 +48,12 @@ func TestDeleteTag(t *testing.T) {
 }
 
 func TestGetTagTotal(t *testing.T) {
-	total, err := GetTagTotal("test")
+	tags, err := GetTagsByName("test")
 	if err != nil {
 		t.Log("err", err)
 	}
-	t.Log("total", total)
+	t.Log("tags", tags)
+	t.Log("total", len(tags))
 }
 
 func TestExitTagWithName(t *testing.T) {

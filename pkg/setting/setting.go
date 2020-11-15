@@ -10,7 +10,7 @@ type app struct {
 	JwtSecret       string   `json:"jwt_secret"`
 	PageSize        uint     `json:"page_size"`
 	RuntimeRootPath string   `json:"runtime_root_path"`
-	ImagePrefixUrl  string   `json:"image_prefix_url"`
+	PrefixUrl       string   `json:"prefix_url"`
 	ImageSavePath   string   `json:"image_save_path"`
 	ImageMaxSize    uint     `json:"image_max_size"`
 	ImageAllowExts  []string `json:"image_allow_exts"`
@@ -18,6 +18,7 @@ type app struct {
 	LogSaveName     string   `json:"log_save_name"`
 	LogFileExt      string   `json:"log_file_ext"`
 	TimeFormat      string   `json:"time_format"`
+	ExportSavePath  string   `json:"export_save_path"`
 }
 
 type server struct {

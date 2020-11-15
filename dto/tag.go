@@ -26,3 +26,13 @@ type EditRequest struct {
 	UpdatedBy string `json:"update_by"`
 	State     int    `json:"state"`
 }
+
+type ExportTagsRequest struct {
+	Name  string `json:"name"`
+	State int    `json:"state"`
+}
+
+type ExportTagsResponse struct {
+	ExportFullUrl string `json:"export_full_url"`
+	ExportSaveUrl string `json:"export_save_url"`
+}

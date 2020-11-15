@@ -6,26 +6,27 @@ replace (
 	github.com/WeCanRun/gin-blog/conf => ./conf
 	github.com/WeCanRun/gin-blog/middleware => ./middleware
 	github.com/WeCanRun/gin-blog/model => ./model
-	github.com/WeCanRun/gin-blog/service => ./service
-	github.com/WeCanRun/gin-blog/service/cache_service => ./service/cache_service
+	github.com/WeCanRun/gin-blog/pkg/constants => ./pkg/constants
 	github.com/WeCanRun/gin-blog/pkg/e => ./pkg/e
 	github.com/WeCanRun/gin-blog/pkg/file => ./pkg/file
 	github.com/WeCanRun/gin-blog/pkg/logging => ./pkg/logging
 	github.com/WeCanRun/gin-blog/pkg/setting => ./pkg/setting
 	github.com/WeCanRun/gin-blog/pkg/util => ./pkg/util
-	github.com/WeCanRun/gin-blog/pkg/constants => ./pkg/constants
 	github.com/WeCanRun/gin-blog/router => ./router
+	github.com/WeCanRun/gin-blog/service => ./service
+	github.com/WeCanRun/gin-blog/service/cache_service => ./service/cache_service
 )
 
 require (
+	github.com/360EntSecGroup-Skylar/excelize/v2 v2.3.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-ini/ini v1.62.0
 	github.com/go-playground/assert/v2 v2.0.1
 	github.com/gomodule/redigo v1.8.2
 	github.com/jinzhu/gorm v1.9.16
-	github.com/robfig/cron v1.2.0
 	github.com/smartystreets/goconvey v1.6.4 // indirect
+	github.com/tealeg/xlsx v1.0.5
 	github.com/unknwon/com v1.0.1
 	gopkg.in/ini.v1 v1.62.0 // indirect
 )

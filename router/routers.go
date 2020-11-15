@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/WeCanRun/gin-blog/middleware"
+	"github.com/WeCanRun/gin-blog/pkg/export"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/upload"
 	v1 "github.com/WeCanRun/gin-blog/router/v1"
@@ -18,6 +19,7 @@ func InitRouters() *gin.Engine {
 	router.GET("/ping", v1.Ping)
 
 	router.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+	router.StaticFS("/export", http.Dir(export.GetExcelRealDir()))
 
 	// auth
 	router.GET("/auth", v1.GetToken)
@@ -34,8 +36,10 @@ func InitRouters() *gin.Engine {
 		apiV1.POST("/tag", v1.AddTag)
 		apiV1.PUT("/tag", v1.EditTag)
 		apiV1.DELETE("/tag/:id", v1.DeleteTag)
+		apiV1.POST("/tag/export", v1.ExportTags)
+		apiV1.POST("/tag/import", v1.ImportTag)
 
-		// article
+		// article todo 文章导入导出功能
 		apiV1.GET("/articles", v1.GetArticles)
 		apiV1.GET("/article/:id", v1.GetArticle)
 		apiV1.POST("/article", v1.AddArticle)
