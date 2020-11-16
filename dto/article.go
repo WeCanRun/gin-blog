@@ -31,3 +31,13 @@ type EditArticleRequest struct {
 	CoverImageUrl string `json:"cover_image_url"`
 	UpdatedBy     string `json:"updated_by"`
 }
+
+type GenArticlePosterReq struct {
+	Width  int `json:"width" binding:"required"`
+	Height int `json:"height" binding:"required"`
+}
+
+type GenArticlePosterResp struct {
+	PosterSaveUrl string `json:"poster_save_url"`
+	PosterUrl     string `json:"poster_url"`
+}

@@ -2,6 +2,7 @@ package file
 
 import (
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"os"
 	"path"
@@ -38,6 +39,22 @@ func MKDir(path string) error {
 	return os.MkdirAll(path, os.ModePerm)
 }
 
+// 打开一个文件
 func Open(name string, flag int, perm os.FileMode) (*os.File, error) {
 	return os.OpenFile(name, flag, perm)
+}
+
+// 成功打开文件
+func MustOpen(path, name string) (*os.File, error) {
+	err := IsNotExitMKDir(path)
+	if err != nil {
+		log.Printf("MustOpen | IsNotExitMKDir fail, 文件打开失败 err:%v\n", err)
+		return nil, err
+	}
+	file, err := Open(path+name, os.O_CREATE, os.ModePerm)
+	if err != nil {
+		log.Printf("MustOpen | Open 文件打开失败,err:%v\n", err)
+		return file, err
+	}
+	return file, nil
 }

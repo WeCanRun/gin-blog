@@ -6,8 +6,8 @@ import (
 	"github.com/WeCanRun/gin-blog/model"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
-	"github.com/WeCanRun/gin-blog/router"
 	"github.com/WeCanRun/gin-blog/service/cache_service"
+	"github.com/WeCanRun/gin-blog/web"
 	"net/http"
 	"os"
 	"os/signal"
@@ -24,7 +24,7 @@ func main() {
 	// 加载 redis
 	cache_service.Setup()
 
-	router := router.InitRouters()
+	router := web.InitRouters()
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", setting.Server.HttpPort),
 		Handler:        router,

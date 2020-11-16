@@ -1,11 +1,12 @@
-package router
+package web
 
 import (
 	"github.com/WeCanRun/gin-blog/middleware"
 	"github.com/WeCanRun/gin-blog/pkg/export"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
+	"github.com/WeCanRun/gin-blog/pkg/share"
 	"github.com/WeCanRun/gin-blog/pkg/upload"
-	v1 "github.com/WeCanRun/gin-blog/router/v1"
+	v1 "github.com/WeCanRun/gin-blog/web/v1"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -20,6 +21,7 @@ func InitRouters() *gin.Engine {
 
 	router.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
 	router.StaticFS("/export", http.Dir(export.GetExcelRealDir()))
+	router.StaticFS("/qr_code", http.Dir(share.GetQrCodeSaveDir()))
 
 	// auth
 	router.GET("/auth", v1.GetToken)
@@ -45,6 +47,7 @@ func InitRouters() *gin.Engine {
 		apiV1.POST("/article", v1.AddArticle)
 		apiV1.PUT("/article", v1.EditArticle)
 		apiV1.DELETE("/article/:id", v1.DeleteArticle)
+		apiV1.POST("/article/share", v1.GenerateArticlePoster)
 
 	}
 	return router

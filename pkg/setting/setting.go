@@ -19,6 +19,7 @@ type app struct {
 	LogFileExt      string   `json:"log_file_ext"`
 	TimeFormat      string   `json:"time_format"`
 	ExportSavePath  string   `json:"export_save_path"`
+	QrCodeSavePath  string   `json:"qr_code_save_path"`
 }
 
 type server struct {
