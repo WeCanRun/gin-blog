@@ -71,7 +71,7 @@ func (q *QrCode) Encode(path string) (string, string, error) {
 	name := GetQrCodeFileName(q.URL) + q.GetQrCodeExt()
 	fullName := path + name
 	if file.IsExit(fullName) {
-		logging.Info("C | 二维码已存在，无需编码")
+		logging.Info("Encode | 二维码 %s 已存在，无需编码", fullName)
 		return path, name, nil
 	}
 	// 编码
