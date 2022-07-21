@@ -1,13 +1,13 @@
 package service
 
 import (
-	"github.com/WeCanRun/gin-blog/dto"
-	"github.com/WeCanRun/gin-blog/model"
+	"github.com/WeCanRun/gin-blog/internal/dto"
+	"github.com/WeCanRun/gin-blog/internal/model"
+	"github.com/WeCanRun/gin-blog/internal/service/cache_service"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/share"
 	"github.com/WeCanRun/gin-blog/pkg/util"
-	"github.com/WeCanRun/gin-blog/service/cache_service"
 	"github.com/boombuler/barcode/qr"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -21,7 +21,7 @@ func GetArticles(ctx *gin.Context, req *dto.GetArticlesRequest) (resp dto.GetArt
 		pageNum = util.GetPage(ctx)
 	}
 	if pageSize <= 0 {
-		pageSize = setting.App.PageSize
+		pageSize = setting.APP.PageSize
 	}
 	articles, err := model.GetArticles(pageNum, pageSize)
 	if err != nil {

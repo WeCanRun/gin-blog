@@ -15,7 +15,7 @@ func ExportExcelName(name string, date time.Time) string {
 }
 
 func GetExcelSavePath() string {
-	return setting.App.ExportSavePath
+	return setting.APP.ExportSavePath
 }
 
 func GetExcelSaveUrl(name string) string {
@@ -23,7 +23,7 @@ func GetExcelSaveUrl(name string) string {
 }
 
 func GetExcelRealDir() string {
-	return setting.App.RuntimeRootPath + GetExcelSavePath()
+	return setting.APP.RuntimeRootPath + GetExcelSavePath()
 }
 
 func GetExcelRealPath(name string) string {
@@ -31,5 +31,5 @@ func GetExcelRealPath(name string) string {
 }
 
 func GetExcelFullUrl(name string) string {
-	return setting.App.PrefixUrl + GetExcelSavePath() + name
+	return setting.APP.PrefixUrl + GetExcelSavePath() + name
 }

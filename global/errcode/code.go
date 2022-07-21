@@ -1,4 +1,4 @@
-package e
+package errcode
 
 const (
 	SUCCESS        = 200
@@ -15,3 +15,9 @@ const (
 	ERROR_AUTH_TOKEN               = 20003
 	ERROR_AUTH                     = 20004
 )
+
+type Response struct {
+	Status int         `json:"status" example:"200" example:"400" example:"500" example:"502"`
+	Msg    string      `json:"msg" example:"ok"`
+	Data   interface{} `json:"data,omitempty"`
+}

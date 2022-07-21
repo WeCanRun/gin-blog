@@ -3,14 +3,14 @@ package service
 import (
 	"errors"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/WeCanRun/gin-blog/dto"
-	"github.com/WeCanRun/gin-blog/model"
+	"github.com/WeCanRun/gin-blog/internal/dto"
+	"github.com/WeCanRun/gin-blog/internal/model"
+	"github.com/WeCanRun/gin-blog/internal/service/cache_service"
 	"github.com/WeCanRun/gin-blog/pkg/export"
 	"github.com/WeCanRun/gin-blog/pkg/file"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/util"
-	"github.com/WeCanRun/gin-blog/service/cache_service"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/tealeg/xlsx"
@@ -26,7 +26,7 @@ func GetTags(c *gin.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse
 		pageNum = util.GetPage(c)
 	}
 	if pageSize <= 0 {
-		pageSize = setting.App.PageSize
+		pageSize = setting.APP.PageSize
 	}
 
 	tags, err := model.GetTags(pageNum, pageSize)

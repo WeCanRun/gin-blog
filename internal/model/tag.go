@@ -17,11 +17,11 @@ import (
 //PRIMARY KEY (`id`)
 //) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章标签管理';
 type Tag struct {
-	gorm.Model
 	Name      string `json:"name"`
 	CreatedBy string `json:"created_by"`
 	UpdatedBy string `json:"updated_by"`
 	State     int    `json:"state"`
+	gorm.Model
 }
 
 //func(tag Tag) TableName() string{

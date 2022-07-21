@@ -3,8 +3,8 @@ package cache_service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/WeCanRun/gin-blog/model"
-	"github.com/WeCanRun/gin-blog/pkg/constants"
+	"github.com/WeCanRun/gin-blog/global/constants"
+	"github.com/WeCanRun/gin-blog/internal/model"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 )
 

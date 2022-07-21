@@ -30,6 +30,11 @@ func Setup() {
 	db.LogMode(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
+	AutoBuildTable()
+}
+
+func AutoBuildTable() {
+	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&Article{}, &Tag{}, &Auth{})
 }
 
 func CloseDB() {

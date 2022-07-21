@@ -1,12 +1,12 @@
 package web
 
 import (
-	"github.com/WeCanRun/gin-blog/middleware"
+	"github.com/WeCanRun/gin-blog/internal/middleware"
+	v1 "github.com/WeCanRun/gin-blog/internal/web/v1"
 	"github.com/WeCanRun/gin-blog/pkg/export"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/share"
 	"github.com/WeCanRun/gin-blog/pkg/upload"
-	v1 "github.com/WeCanRun/gin-blog/web/v1"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

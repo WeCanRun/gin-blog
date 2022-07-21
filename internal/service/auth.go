@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/WeCanRun/gin-blog/model"
-	"github.com/WeCanRun/gin-blog/pkg/e"
+	e "github.com/WeCanRun/gin-blog/global/errcode"
+	"github.com/WeCanRun/gin-blog/internal/model"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/util"
 )

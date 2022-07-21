@@ -1,0 +1,42 @@
+#debug or release
+server:
+  RunMode: debug
+  HttpPort: 8000
+  ReadTimeout: 60
+  WriteTimeout: 60
+
+app:
+  PageSize: 10
+  JwtSecret: 23347$040412
+  RuntimeRootPath: runtime/
+  PrefixUrl: http://127.0.0.1:8000/
+  ImageSavePath: upload/images/
+  # MB
+  ImageMaxSize: 5
+  ImageAllowExts: .jpg,.jpeg,.png
+
+  LogSavePath: runtime/logs/
+  LogSaveName: log
+  LogFileExt: log
+  TimeFormat: "2006-01-02"
+
+  ExportSavePath: export/
+  QrCodeSavePath: qr_code/
+  FontSavePath: conf/
+  BgSavePath: conf/
+
+database:
+  Type: mysql
+  User: root
+  Password: 123456
+  #127.0.0.1:3306
+  Host: 127.0.0.1:49154
+  DbName: blog
+  TablePrefix: blog_
+
+redis:
+  Host: 127.0.0.1:6379
+  Password:
+  MaxIdle: 30
+  MaxActive: 30
+  IdleTimeout: 200

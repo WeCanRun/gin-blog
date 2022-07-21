@@ -1,10 +1,10 @@
 package v1
 
 import (
-	"github.com/WeCanRun/gin-blog/dto"
-	"github.com/WeCanRun/gin-blog/pkg/e"
+	e "github.com/WeCanRun/gin-blog/global/errcode"
+	"github.com/WeCanRun/gin-blog/internal/dto"
+	"github.com/WeCanRun/gin-blog/internal/service"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
-	"github.com/WeCanRun/gin-blog/service"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"strconv"

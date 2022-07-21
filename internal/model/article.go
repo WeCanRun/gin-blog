@@ -6,7 +6,6 @@ import (
 )
 
 type Article struct {
-	gorm.Model
 	TagId         uint   `json:"tag_id"` // 与之关联的标签
 	Title         string `json:"title"`
 	Desc          string `json:"desc"`            //文章描述
@@ -15,6 +14,7 @@ type Article struct {
 	CreatedBy     string `json:"created_by"`
 	UpdatedBy     string `json:"updated_by"`
 	State         int    `json:"state"` // 状态，0 禁用， 1 启用
+	gorm.Model
 }
 
 func GetArticles(pageNum, pageSize uint) (articles []Article, err error) {

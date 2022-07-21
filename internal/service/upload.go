@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
-	"github.com/WeCanRun/gin-blog/dto"
-	"github.com/WeCanRun/gin-blog/pkg/e"
+	e "github.com/WeCanRun/gin-blog/global/errcode"
+	"github.com/WeCanRun/gin-blog/internal/dto"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/upload"
 	"github.com/gin-gonic/gin"

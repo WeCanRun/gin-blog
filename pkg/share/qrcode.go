@@ -35,11 +35,11 @@ func NewQrCode(url string, width, height int, level qr.ErrorCorrectionLevel, mod
 }
 
 func GetQrCodePath() string {
-	return setting.App.QrCodeSavePath
+	return setting.APP.QrCodeSavePath
 }
 
 func GetQrCodeSaveDir() string {
-	return setting.App.RuntimeRootPath + GetQrCodePath()
+	return setting.APP.RuntimeRootPath + GetQrCodePath()
 }
 
 func GetQrCodeSavePath(name string) string {
@@ -52,7 +52,7 @@ func GetQrCodeFileName(url string) string {
 }
 
 func GetQrCodeFullUrl(name string) string {
-	return setting.App.PrefixUrl + GetQrCodePath() + name
+	return setting.APP.PrefixUrl + GetQrCodePath() + name
 }
 
 // 获取二维码的文件后缀

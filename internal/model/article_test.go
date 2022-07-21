@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	setting.Setup("../conf/app.ini")
+	setting.Setup("../../conf/app.yaml")
 	logging.Setup()
 	Setup()
 }

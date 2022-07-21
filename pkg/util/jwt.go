@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var jwtSecret = []byte(setting.App.JwtSecret)
+var jwtSecret = []byte(setting.APP.JwtSecret)
 
 type Claims struct {
 	Username string `json:"username"`

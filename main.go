@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/WeCanRun/gin-blog/model"
+	"github.com/WeCanRun/gin-blog/internal/model"
+	"github.com/WeCanRun/gin-blog/internal/service/cache_service"
+	"github.com/WeCanRun/gin-blog/internal/web"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
-	"github.com/WeCanRun/gin-blog/service/cache_service"
-	"github.com/WeCanRun/gin-blog/web"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,7 +16,7 @@ import (
 
 func main() {
 	//加载配置文件
-	setting.Setup("./conf/app.ini")
+	setting.Setup("")
 	// 加载日志配置
 	logging.Setup()
 	// 加载数据库

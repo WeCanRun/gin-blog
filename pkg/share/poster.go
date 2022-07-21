@@ -1,7 +1,7 @@
 package share
 
 import (
-	"github.com/WeCanRun/gin-blog/model"
+	"github.com/WeCanRun/gin-blog/internal/model"
 	"github.com/WeCanRun/gin-blog/pkg/file"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
@@ -93,7 +93,7 @@ func (apb *ArticlePosterBg) Generate() (string, string, error) {
 	defer imageFile.Close()
 
 	// 获取背景图片文件句柄
-	bgFile, err := file.MustOpen(setting.App.BgSavePath, apb.Name)
+	bgFile, err := file.MustOpen(setting.APP.BgSavePath, apb.Name)
 	if err != nil {
 		logging.Error("Generate | file.MustOpen fail, err:%v", err)
 		return path, name, err
@@ -160,7 +160,7 @@ type DrawText struct {
 
 func (apb *ArticlePosterBg) WriterFontToPoster(d *DrawText, fontName string) error {
 	// 打开字体文件
-	fontSrc := setting.App.FontSavePath + fontName
+	fontSrc := setting.APP.FontSavePath + fontName
 	fontSrcBytes, err := ioutil.ReadFile(fontSrc)
 	if err != nil {
 		logging.Error("DrawPoster | ioutil.ReadFile fail, fontSrc:%s, err:%v", fontSrc, err)

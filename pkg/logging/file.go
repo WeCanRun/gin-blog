@@ -9,12 +9,12 @@ import (
 )
 
 func getLogFilePath() string {
-	return fmt.Sprintf("%s", setting.App.LogSavePath)
+	return fmt.Sprintf("%s", setting.APP.LogSavePath)
 }
 
 func getLogFileName() string {
-	return fmt.Sprintf("%s-%s.%s", setting.App.LogSaveName, time.Now().Format(setting.App.TimeFormat),
-		setting.App.LogFileExt)
+	return fmt.Sprintf("%s-%s.%s", setting.APP.LogSaveName, time.Now().Format(setting.APP.TimeFormat),
+		setting.APP.LogFileExt)
 }
 
 func openLogFile(filePath, fileName string) (f *os.File, err error) {
