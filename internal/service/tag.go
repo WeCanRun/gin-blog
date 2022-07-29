@@ -5,13 +5,13 @@ import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/WeCanRun/gin-blog/internal/dto"
 	"github.com/WeCanRun/gin-blog/internal/model"
+	"github.com/WeCanRun/gin-blog/internal/server"
 	"github.com/WeCanRun/gin-blog/internal/service/cache_service"
 	"github.com/WeCanRun/gin-blog/pkg/export"
 	"github.com/WeCanRun/gin-blog/pkg/file"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/util"
-	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/tealeg/xlsx"
 	"io"
@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-func GetTags(c *gin.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse, err error) {
+func GetTags(c *server.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse, err error) {
 	var pageNum = req.PageNum
 	var pageSize = req.PageSize
 	if pageNum <= 0 {
@@ -47,7 +47,7 @@ func GetTags(c *gin.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse
 	return
 }
 
-func GetTag(ctx *gin.Context, id uint) (resp dto.GetTagResponse, err error) {
+func GetTag(ctx *server.Context, id uint) (resp dto.GetTagResponse, err error) {
 	tag, err := cache_service.GetTagCacheById(id)
 	if tag.ID > 0 {
 		resp.ID = id
@@ -71,7 +71,7 @@ func GetTag(ctx *gin.Context, id uint) (resp dto.GetTagResponse, err error) {
 	return
 }
 
-func AddTag(ctx *gin.Context, req *dto.AddTagRequest) (err error) {
+func AddTag(ctx *server.Context, req *dto.AddTagRequest) (err error) {
 	if req.State != 0 && req.State != 1 {
 		err = errors.New("services#AddTag state 只能为 0 或 1")
 		logging.Error("err: %v", err)
@@ -86,7 +86,7 @@ func AddTag(ctx *gin.Context, req *dto.AddTagRequest) (err error) {
 	return
 }
 
-func DeleteTag(ctx *gin.Context, id uint) (err error) {
+func DeleteTag(ctx *server.Context, id uint) (err error) {
 	// todo 各种校验
 	err = model.DeleteTag(id)
 	if err != nil {
@@ -103,7 +103,7 @@ func DeleteTag(ctx *gin.Context, id uint) (err error) {
 	return nil
 }
 
-func EditTag(ctx *gin.Context, request *dto.EditRequest) (err error) {
+func EditTag(ctx *server.Context, request *dto.EditRequest) (err error) {
 	// todo 各种校验
 	err = model.EditTag(model.Tag{
 		Model:     gorm.Model{ID: request.ID},

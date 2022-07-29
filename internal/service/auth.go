@@ -10,14 +10,14 @@ import (
 func GetTokenWithAuth(username, password string) (code int, token string) {
 	ok := model.CheckAuth(username, password)
 	if !ok {
-		code = e.ERROR_AUTH
+		code = e.ErrorAuth
 		logging.Error("GetTokenWithAuth#CheckAuth fail")
 		return
 	}
 	var err error
 	token, err = util.GenerateToken(username, password)
 	if err != nil || len(token) <= 0 {
-		code = e.ERROR_AUTH_TOKEN
+		code = e.ErrorAuthToken
 		logging.Error("GetTokenWithAuth#GenerateToken fail, %v", err)
 		return
 	}

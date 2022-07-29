@@ -3,19 +3,19 @@ package service
 import (
 	"github.com/WeCanRun/gin-blog/internal/dto"
 	"github.com/WeCanRun/gin-blog/internal/model"
+	"github.com/WeCanRun/gin-blog/internal/server"
 	"github.com/WeCanRun/gin-blog/internal/service/cache_service"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/share"
 	"github.com/WeCanRun/gin-blog/pkg/util"
 	"github.com/boombuler/barcode/qr"
-	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
 
 const QRCODE_URL = "https://github.com/WeCanRun/gin-blog%E7%B3%BB%E5%88%97%E7%9B%AE%E5%BD%95"
 
-func GetArticles(ctx *gin.Context, req *dto.GetArticlesRequest) (resp dto.GetArticlesResponse, err error) {
+func GetArticles(ctx *server.Context, req *dto.GetArticlesRequest) (resp dto.GetArticlesResponse, err error) {
 	pageNum, pageSize := req.PageNum, req.PageSize
 	if pageNum <= 0 {
 		pageNum = util.GetPage(ctx)
@@ -46,7 +46,7 @@ func GetArticles(ctx *gin.Context, req *dto.GetArticlesRequest) (resp dto.GetArt
 	return
 }
 
-func GetArticle(ctx *gin.Context, id uint) (model.Article, error) {
+func GetArticle(ctx *server.Context, id uint) (model.Article, error) {
 	article, _ := cache_service.GetArticleCacheById(id)
 	if article.ID > 0 {
 		return article, nil
@@ -64,7 +64,7 @@ func GetArticle(ctx *gin.Context, id uint) (model.Article, error) {
 	return article, nil
 }
 
-func AddArticle(ctx *gin.Context, req *dto.AddArticleRequest) error {
+func AddArticle(ctx *server.Context, req *dto.AddArticleRequest) error {
 	// todo 各种逻辑校验
 	return model.AddArticle(model.Article{
 		TagId:         req.TagId,
@@ -77,7 +77,7 @@ func AddArticle(ctx *gin.Context, req *dto.AddArticleRequest) error {
 	})
 }
 
-func EditArticle(ctx *gin.Context, req *dto.EditArticleRequest) error {
+func EditArticle(ctx *server.Context, req *dto.EditArticleRequest) error {
 	// todo 各种逻辑校验
 	updateArticle := model.Article{
 		Model: gorm.Model{
@@ -110,7 +110,7 @@ func EditArticle(ctx *gin.Context, req *dto.EditArticleRequest) error {
 	return err
 }
 
-func DeleteArticle(ctx *gin.Context, id uint) error {
+func DeleteArticle(ctx *server.Context, id uint) error {
 	// todo 各种逻辑校验
 	err := model.DeleteArticle(id)
 	if err != nil {
