@@ -5,24 +5,21 @@ import (
 	"github.com/WeCanRun/gin-blog/internal/server"
 	v1 "github.com/WeCanRun/gin-blog/internal/web/v1"
 	"github.com/WeCanRun/gin-blog/pkg/export"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/share"
 	"github.com/WeCanRun/gin-blog/pkg/upload"
-	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func InitRouters() *server.RouterWarp {
 	router := server.NewRouter()
-	gin.SetMode(setting.Server.RunMode)
 
 	//router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.GET("/ping", v1.Ping)
 
-	router.GR().StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
-	router.GR().StaticFS("/export", http.Dir(export.GetExcelRealDir()))
-	router.GR().StaticFS("/qr_code", http.Dir(share.GetQrCodeSaveDir()))
+	router.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+	router.StaticFS("/export", http.Dir(export.GetExcelRealDir()))
+	router.StaticFS("/qr_code", http.Dir(share.GetQrCodeSaveDir()))
 
 	// auth
 	router.GET("/auth", v1.GetToken)

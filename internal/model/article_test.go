@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	setting.Setup("../../conf/app.yaml")
+	setting.Setup("../../conf/app-test.yaml")
 	logging.Setup()
 	Setup()
 }
@@ -40,8 +40,8 @@ func TestAddArticle(t *testing.T) {
 	if err != nil {
 		t.Log("err: ", err)
 	}
-	newArticle, _ := GetArticleById(1)
-	assert.Equal(t, newArticle.ID, 1)
+	newArticle, _ := GetArticleById(article.ID)
+	assert.Equal(t, newArticle.ID, article.ID)
 }
 
 func TestGetArticleById(t *testing.T) {

@@ -20,14 +20,8 @@ import (
 )
 
 func GetTags(c *server.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse, err error) {
-	var pageNum = req.PageNum
-	var pageSize = req.PageSize
-	if pageNum <= 0 {
-		pageNum = util.GetPage(c)
-	}
-	if pageSize <= 0 {
-		pageSize = setting.APP.PageSize
-	}
+	pageNum := util.GetPage(c)
+	pageSize := setting.APP.PageSize
 
 	tags, err := model.GetTags(pageNum, pageSize)
 	if err != nil {
@@ -41,6 +35,11 @@ func GetTags(c *server.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsRespo
 		names = append(names, tag.Name)
 	}
 	resp = &dto.GetTagsResponse{
+		Pager: dto.Pager{
+			PageNum:   pageNum,
+			PageSize:  pageSize,
+			TotalRows: uint(len(tags)),
+		},
 		IDs:   ids,
 		Names: names,
 	}

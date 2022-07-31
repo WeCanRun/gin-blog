@@ -10,6 +10,7 @@ type GetTagResponse struct {
 }
 
 type GetTagsResponse struct {
+	Pager Pager    `json:"pager"`
 	IDs   []uint   `json:"ids"`
 	Names []string `json:"names"`
 }

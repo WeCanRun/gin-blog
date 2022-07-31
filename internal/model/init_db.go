@@ -19,7 +19,7 @@ func Setup() {
 		setting.Database.DbName)
 	db, err = gorm.Open(setting.Database.Type, dbStr)
 	if err != nil || db == nil {
-		logging.Fatal("db init fail, dbStr: %s, err: %v", dbStr, err)
+		logging.Log().Fatal("db init fail, dbStr: %s, err: %v", dbStr, err)
 	}
 
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {

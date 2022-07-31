@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"os"
-	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
@@ -35,14 +34,13 @@ func Setup(path string) {
 
 	if path == "" {
 		pwd, _ := os.Getwd()
-		base := filepath.Dir(filepath.Dir(pwd))
+		base := pwd
 		file := fmt.Sprintf(DefaultConfigFile, *Env)
 
 		path = base + file
 		if runtime.GOOS == "windows" {
 			path = strings.ReplaceAll(path, "/", "\\")
 		}
-
 	}
 
 	if path != "" {
@@ -91,12 +89,10 @@ func (c *Config) loadData() {
 	if err := viper.Unmarshal(&Setting); err != nil {
 		log.Fatalf("laod setting fail:  %v", err)
 	}
-
-	Database = Setting.Database
-	Redis = Setting.Redis
-	Server = Setting.Server
-	APP = Setting.APP
-
+	loadApp()
+	loadServer()
+	loadDataBase()
+	loadRedis()
 }
 
 // 监控配置文件变化并热加载程序
@@ -106,41 +102,32 @@ func (c *Config) watchConfig() {
 		log.Printf("config file changed: %s\n", e.Name)
 		if err := viper.Unmarshal(&Setting); err != nil {
 			log.Printf("err: %v\n", err)
+			return
 		}
-
-		Redis = Setting.Redis
-		Database = Setting.Database
-		Server = Setting.Server
-		APP = Setting.APP
+		loadApp()
+		loadServer()
+		loadDataBase()
+		loadRedis()
 	})
 }
 
 func loadRedis() {
-	if err := viper.Unmarshal(&Redis); err != nil {
-		log.Fatalf("load Redis fail:  %v", err)
-	}
-
+	Redis = Setting.Redis
 	Redis.IdleTimeout *= time.Second
 }
 
 func loadDataBase() {
-	if err := viper.Unmarshal(&Database); err != nil {
-		log.Fatalf("laod Database fail:  %v", err)
-	}
+	Database = Setting.Database
 }
 
 func loadServer() {
-	if err := viper.Unmarshal(&Server); err != nil {
-		log.Fatalf("load Server fail:  %v", err)
-	}
+	Server = Setting.Server
+
 	Server.ReadTimeout *= time.Second
 	Server.WriteTimeout *= time.Second
 }
 
 func loadApp() {
-	if err := viper.Unmarshal(&APP); err != nil {
-		log.Fatalf("load APP fail: %v", err)
-	}
-
+	APP = Setting.APP
 	APP.ImageMaxSize *= 1024 * 1024
 }

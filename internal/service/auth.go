@@ -7,7 +7,7 @@ import (
 	"github.com/WeCanRun/gin-blog/pkg/util"
 )
 
-func GetTokenWithAuth(username, password string) (code int, token string) {
+func GetTokenWithAuth(username, password string) (code *e.InternalError, token string) {
 	ok := model.CheckAuth(username, password)
 	if !ok {
 		code = e.ErrorAuth

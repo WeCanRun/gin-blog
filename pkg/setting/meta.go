@@ -25,6 +25,8 @@ type app struct {
 	QrCodeSavePath  string   `json:"qr_code_save_path"`
 	FontSavePath    string   `json:"font_save_path"`
 	BgSavePath      string   `json:"bg_save_path"`
+	DefaultPageSize uint     `json:"default_page_size"`
+	MaxPageSize     uint     `json:"max_page_size"`
 }
 
 type server struct {

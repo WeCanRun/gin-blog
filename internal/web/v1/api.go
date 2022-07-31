@@ -20,9 +20,9 @@ func GetToken(ctx *server.Context) error {
 		logging.Error("GetToken params err")
 		return ctx.ParamsError()
 	}
-	code, token := service.GetTokenWithAuth(username, password)
+	err, token := service.GetTokenWithAuth(username, password)
 	if len(token) <= 0 {
-		return ctx.OtherError(code)
+		return err
 	}
 	return ctx.Success(map[string]string{"token": token})
 }

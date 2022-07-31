@@ -26,11 +26,13 @@ require (
 	github.com/go-playground/assert/v2 v2.0.1
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gomodule/redigo v1.8.2
+	github.com/google/uuid v1.1.2
 	github.com/jinzhu/gorm v1.9.16
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/viper v1.12.0
 	github.com/tealeg/xlsx v1.0.5
 	github.com/unknwon/com v1.0.1
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
 replace (

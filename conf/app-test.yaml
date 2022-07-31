@@ -25,12 +25,16 @@ app:
   FontSavePath: conf/
   BgSavePath: conf/
 
+  DefaultPageSize: 5
+  MaxPageSize: 1000
+
+
 database:
   Type: mysql
   User: root
-  Password: 123456
+  Password: root
   #127.0.0.1:3306
-  Host: 127.0.0.1:49154
+  Host: 127.0.0.1:3306
   DbName: blog
   TablePrefix: blog_
 

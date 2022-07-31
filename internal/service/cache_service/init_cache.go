@@ -15,14 +15,14 @@ func Setup() error {
 		Dial: func() (conn redis.Conn, err error) {
 			c, err := redis.Dial("tcp", setting.Redis.Host)
 			if err != nil {
-				logging.Fatal(" cache_service.Setup | redis 连接失败")
+				logging.Log().Fatal(" cache_service.Setup | redis 连接失败")
 				return nil, err
 			}
 			if setting.Redis.Password != "" {
 				_, err := c.Do("AUTH", setting.Redis.Password)
 				if err != nil {
 					c.Close()
-					logging.Fatal(" cache_service.Setup | redis 连接失败, 密码错误")
+					logging.Log().Fatal(" cache_service.Setup | redis 连接失败, 密码错误")
 					return nil, err
 				}
 			}

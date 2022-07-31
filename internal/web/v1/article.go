@@ -23,6 +23,8 @@ func GetArticles(ctx *server.Context) error {
 		return ctx.ServerError("获取文章列表失败")
 	}
 
+	ctx.Logger().Debug(resp)
+
 	return ctx.Success(resp)
 }
 

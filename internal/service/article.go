@@ -6,7 +6,6 @@ import (
 	"github.com/WeCanRun/gin-blog/internal/server"
 	"github.com/WeCanRun/gin-blog/internal/service/cache_service"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/share"
 	"github.com/WeCanRun/gin-blog/pkg/util"
 	"github.com/boombuler/barcode/qr"
@@ -16,13 +15,8 @@ import (
 const QRCODE_URL = "https://github.com/WeCanRun/gin-blog%E7%B3%BB%E5%88%97%E7%9B%AE%E5%BD%95"
 
 func GetArticles(ctx *server.Context, req *dto.GetArticlesRequest) (resp dto.GetArticlesResponse, err error) {
-	pageNum, pageSize := req.PageNum, req.PageSize
-	if pageNum <= 0 {
-		pageNum = util.GetPage(ctx)
-	}
-	if pageSize <= 0 {
-		pageSize = setting.APP.PageSize
-	}
+	pageNum := util.GetPage(ctx)
+	pageSize := util.GetPageSize(ctx)
 	articles, err := model.GetArticles(pageNum, pageSize)
 	if err != nil {
 		return
@@ -42,6 +36,12 @@ func GetArticles(ctx *server.Context, req *dto.GetArticlesRequest) (resp dto.Get
 	}
 	for _, tag := range tags {
 		resp.TagNames = append(resp.TagNames, tag.Name)
+	}
+
+	resp.Pager = dto.Pager{
+		PageNum:   pageNum,
+		PageSize:  pageSize,
+		TotalRows: uint(len(articles)),
 	}
 	return
 }

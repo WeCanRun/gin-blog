@@ -1,86 +1,126 @@
 package server
 
 import (
+	"context"
+	"fmt"
+	"github.com/WeCanRun/gin-blog/pkg/logging"
+	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 )
 
+var svr *http.Server
+
+func Init(router *RouterWarp) {
+	svr = &http.Server{
+		Addr:           fmt.Sprintf(":%d", setting.Server.HttpPort),
+		Handler:        router.Engine(),
+		ReadTimeout:    setting.Server.ReadTimeout,
+		WriteTimeout:   setting.Server.WriteTimeout,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	// use middleware
+
+	// other
+
+}
+
+func Run(ctx context.Context) {
+	// 启动服务
+	go func() {
+		if err := svr.ListenAndServe(); err != nil {
+			logging.Error("Listen:%s", err)
+		}
+	}()
+
+	quit := make(chan os.Signal)
+	// 阻塞、等待终止信号
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+
+	logging.Info("shutdown server...")
+	timeout, cancelFunc := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelFunc()
+
+	if err := svr.Shutdown(timeout); err != nil {
+		logging.Error("server shutdown err", err)
+	}
+	logging.Info("server exiting")
+}
+
 type RouterWarp struct {
-	gr gin.IRouter
+	gh *gin.Engine
 }
 
 func NewRouter() *RouterWarp {
 	return &RouterWarp{
-		gr: &gin.RouterGroup{},
+		gh: gin.New(),
 	}
 }
 
-func (w *RouterWarp) GR() gin.IRouter {
-	return w.gr
+func (w *RouterWarp) Engine() *gin.Engine {
+	return w.gh
 }
 
 func (w *RouterWarp) POST(path string, handler Handler) {
-	w.gr.POST(path, HandlerWarp(handler))
+	w.gh.POST(path, HandlerWarp(handler))
 }
 
 func (w *RouterWarp) GET(path string, handler Handler) {
-	w.gr.GET(path, HandlerWarp(handler))
+	w.gh.GET(path, HandlerWarp(handler))
 }
 
 func (w *RouterWarp) Use(handlers ...Handler) {
-	w.gr.Use(HandlerWarp(handlers...))
+	w.gh.Use(HandlerWarp(handlers...))
 }
 
 func (w *RouterWarp) Handle(method, path string, handler Handler) {
-	w.gr.Handle(method, path, HandlerWarp(handler))
+	w.gh.Handle(method, path, HandlerWarp(handler))
 }
 
 func (w *RouterWarp) Any(path string, handler Handler) {
-	w.gr.Any(path, HandlerWarp(handler))
+	w.gh.Any(path, HandlerWarp(handler))
 }
 
 func (w *RouterWarp) DELETE(path string, handler Handler) {
-	w.gr.DELETE(path, HandlerWarp(handler))
+	w.gh.DELETE(path, HandlerWarp(handler))
 }
 
 func (w *RouterWarp) PATCH(path string, handler Handler) {
-	w.gr.PATCH(path, HandlerWarp(handler))
+	w.gh.PATCH(path, HandlerWarp(handler))
 }
 
 func (w *RouterWarp) PUT(path string, handler Handler) {
-	w.gr.PUT(path, HandlerWarp(handler))
+	w.gh.PUT(path, HandlerWarp(handler))
 }
 
 func (w *RouterWarp) OPTIONS(path string, handler Handler) {
-	w.gr.OPTIONS(path, HandlerWarp(handler))
+	w.gh.OPTIONS(path, HandlerWarp(handler))
 }
 
 func (w *RouterWarp) HEAD(path string, handler Handler) {
-	w.gr.HEAD(path, HandlerWarp(handler))
+	w.gh.HEAD(path, HandlerWarp(handler))
 }
 
 func (w *RouterWarp) StaticFile(path, filePath string) {
-	w.gr.StaticFile(path, filePath)
+	w.gh.StaticFile(path, filePath)
 }
 
 func (w *RouterWarp) Static(path, filePath string) {
-	w.gr.Static(path, filePath)
+	w.gh.Static(path, filePath)
 }
 
 func (w *RouterWarp) StaticFS(path string, fs http.FileSystem) {
-	w.gr.StaticFS(path, fs)
+	w.gh.StaticFS(path, fs)
 }
 
 func (w *RouterWarp) Group(path string, handlers ...Handler) *RouterWarp {
+	w.gh.RouterGroup = *w.gh.Group(path, HandlerWarp(handlers...))
 	return &RouterWarp{
-		gr: w.gr.Group(path, HandlerWarp(handlers...)),
-	}
-}
-
-type Handler func(*Context) error
-
-func HandlerWarp(handler ...Handler) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-
+		gh: w.gh,
 	}
 }

@@ -13,3 +13,19 @@ func GetPage(c *server.Context) (result uint) {
 	}
 	return
 }
+
+func GetPageSize(c *server.Context) (res uint) {
+	size, _ := com.StrTo(c.Query("page_size")).Int()
+	if size <= 0 {
+		res = setting.APP.DefaultPageSize
+	} else if uint(size) > setting.APP.MaxPageSize {
+		res = setting.APP.MaxPageSize
+	} else {
+		res = uint(size)
+	}
+	return
+}
+
+func GetPageOffset(page, pageSize uint) uint {
+	return (page - 1) * pageSize
+}

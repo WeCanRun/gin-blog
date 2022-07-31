@@ -5,6 +5,7 @@ type GetArticlesRequest struct {
 }
 
 type GetArticlesResponse struct {
+	Pager    Pager    `json:"pager"`
 	IDs      []uint   `json:"ids"`
 	Titles   []string `json:"titles"`
 	TagIds   []uint   `json:"tag_ids"`
