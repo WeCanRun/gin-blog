@@ -18,10 +18,12 @@ func main() {
 	// 加载数据库
 	model.Setup()
 	// 加载 redis
-	cache_service.Setup()
+	if err := cache_service.Setup(); err != nil {
+		logging.Panic(err)
+	}
 
-	routers := web.InitRouters()
-	server.Init(routers)
+	router := server.Init()
+	web.InitRouters(router)
 
 	ctx := context.Background()
 	server.Run(ctx)

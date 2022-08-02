@@ -27,6 +27,18 @@ func GetTags(ctx *server.Context) error {
 }
 
 // 获取指定标签
+// ShowAccount godoc
+// @Summary      Show an tag
+// @Description  get tag by ID
+// @Tags         tag
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Tag ID"
+// @Success      200  {object}  e.InternalError
+// @Failure      400  {object}  e.InternalError
+// @Failure      404  {object}  e.InternalError
+// @Failure      500  {object}  e.InternalError
+// @Router       /tag/{id} [get]
 func GetTag(ctx *server.Context) error {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -48,11 +60,12 @@ func GetTag(ctx *server.Context) error {
 
 // @Summary 新增文章标签
 // @Produce  json
-// @Param name query string true "Name"
-// @Param state query int false "State"
-// @Param created_by query int false "CreatedBy"
+// @Param name body string true "Name"
+// @Param state body int false "State"
+// @Param created_by body int false "CreatedBy"
 // @Success 200 {string} json "{"code":200,"data":{},"msg":"ok"}"
-// @Router /api/v1/tag [post]cd cd
+// @failure      400              {string}  string    "error"
+// @Router /api/v1/tag [post]
 func AddTag(ctx *server.Context) error {
 	req := new(dto.AddTagRequest)
 	if err := ctx.Bind(req); err != nil {

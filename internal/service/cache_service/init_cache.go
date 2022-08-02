@@ -15,7 +15,7 @@ func Setup() error {
 		Dial: func() (conn redis.Conn, err error) {
 			c, err := redis.Dial("tcp", setting.Redis.Host)
 			if err != nil {
-				logging.Log().Fatal(" cache_service.Setup | redis 连接失败")
+				logging.Log().Fatalf("cache_service.Setup | redis [%s] 连接失败", setting.Redis.Host)
 				return nil, err
 			}
 			if setting.Redis.Password != "" {

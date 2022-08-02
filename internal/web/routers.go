@@ -1,7 +1,6 @@
 package web
 
 import (
-	"github.com/WeCanRun/gin-blog/internal/middleware"
 	"github.com/WeCanRun/gin-blog/internal/server"
 	v1 "github.com/WeCanRun/gin-blog/internal/web/v1"
 	"github.com/WeCanRun/gin-blog/pkg/export"
@@ -10,10 +9,21 @@ import (
 	"net/http"
 )
 
-func InitRouters() *server.RouterWarp {
-	router := server.NewRouter()
+// @title           Swagger Example API
+// @version         1.0
+// @description     This is a sample server celler server.
+// @termsOfService  http://swagger.io/terms/
 
-	//router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  support@swagger.io
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8000
+// @BasePath  /api/v1
+func InitRouters(router *server.RouterWarp) {
 
 	router.GET("/ping", v1.Ping)
 
@@ -27,7 +37,7 @@ func InitRouters() *server.RouterWarp {
 	// upload
 	router.POST("/image", v1.UploadImage)
 
-	router.Use(middleware.JWT())
+	//router.Use(middleware.JWT())
 	apiV1 := router.Group("/api/v1")
 	{
 		// tag
@@ -48,5 +58,4 @@ func InitRouters() *server.RouterWarp {
 		apiV1.POST("/article/share", v1.GenerateArticlePoster)
 
 	}
-	return router
 }

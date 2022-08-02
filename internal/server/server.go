@@ -3,9 +3,13 @@ package server
 import (
 	"context"
 	"fmt"
+	_ "github.com/WeCanRun/gin-blog/docs"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	gs "github.com/swaggo/gin-swagger"
+
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,7 +18,9 @@ import (
 
 var svr *http.Server
 
-func Init(router *RouterWarp) {
+func Init() *RouterWarp {
+	router := NewRouter()
+
 	svr = &http.Server{
 		Addr:           fmt.Sprintf(":%d", setting.Server.HttpPort),
 		Handler:        router.Engine(),
@@ -27,6 +33,7 @@ func Init(router *RouterWarp) {
 
 	// other
 
+	return router
 }
 
 func Run(ctx context.Context) {
@@ -57,8 +64,12 @@ type RouterWarp struct {
 }
 
 func NewRouter() *RouterWarp {
+	router := gin.New()
+
+	router.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
+
 	return &RouterWarp{
-		gh: gin.New(),
+		gh: router,
 	}
 }
 

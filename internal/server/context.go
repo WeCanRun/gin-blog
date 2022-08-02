@@ -18,13 +18,11 @@ type Context struct {
 
 func (ctx *Context) OtherError(code int) *errcode.InternalError {
 	err := errcode.New(code, errcode.GetMsg(code))
-	ctx.AbortWithStatusJSON(err.StatusCode(), err)
 	return err
 }
 
 func (ctx *Context) AuthError() *errcode.InternalError {
 	err := errcode.ErrorAuth
-	ctx.AbortWithStatusJSON(err.StatusCode(), err)
 	return err
 }
 
@@ -42,13 +40,11 @@ func (ctx *Context) SuccessList(data interface{}) *errcode.InternalError {
 
 func (ctx *Context) ServerError(data interface{}) *errcode.InternalError {
 	err := errcode.ServerError
-	ctx.AbortWithStatusJSON(err.StatusCode(), errcode.NewWithData(err.Code, err.Msg, data))
 	return err
 }
 
 func (ctx *Context) ParamsError() *errcode.InternalError {
 	err := errcode.BadRequest
-	ctx.AbortWithStatusJSON(err.StatusCode(), err)
 	return err
 }
 
@@ -83,10 +79,11 @@ func HandlerWarp(handler ...Handler) gin.HandlerFunc {
 		var err error
 		for _, h := range handler {
 			if err = h(customCtx); err != nil {
-				_, ok := err.(*errcode.InternalError)
+				ierr, ok := err.(*errcode.InternalError)
 				if !ok {
-					err = customCtx.ServerError(err.Error())
+					ierr = customCtx.ServerError(err)
 				}
+				ctx.AbortWithStatusJSON(ierr.StatusCode(), errcode.NewWithData(ierr.Code, ierr.Msg, ierr.Data))
 			}
 		}
 
