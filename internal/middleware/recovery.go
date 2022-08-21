@@ -3,11 +3,11 @@ package middleware
 import (
 	"bytes"
 	"fmt"
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/global/constants"
 	e "github.com/WeCanRun/gin-blog/global/errcode"
 	"github.com/WeCanRun/gin-blog/pkg/file"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/util"
 	"github.com/gin-gonic/gin"
 	"html/template"
@@ -43,7 +43,7 @@ func Recovery() gin.HandlerFunc {
 					logging.Errorf("execute fail, err: %v", err)
 				}
 
-				util.SendEmail(setting.Email.To,
+				util.SendEmail(global.Setting.Email.To,
 					subject,
 					body.String())
 

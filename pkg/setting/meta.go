@@ -1,13 +1,16 @@
 package setting
 
-import "time"
+import (
+	"time"
+)
 
-type setting struct {
+type Setting struct {
 	APP      app
 	Server   server
 	Database database
 	Redis    redis
 	Email    email
+	Jaeger   jaeger
 }
 
 type app struct {
@@ -21,7 +24,7 @@ type app struct {
 	LogSavePath     string   `json:"log_save_path"`
 	LogSaveName     string   `json:"log_save_name"`
 	LogFileExt      string   `json:"log_file_ext"`
-	TimeFormat      string   `json:"time_format"`
+	LogTimeFormat   string   `json:"log_time_format"`
 	ExportSavePath  string   `json:"export_save_path"`
 	QrCodeSavePath  string   `json:"qr_code_save_path"`
 	FontSavePath    string   `json:"font_save_path"`
@@ -62,4 +65,8 @@ type email struct {
 	Password string   `json:"password"`
 	From     string   `json:"from"`
 	To       []string `json:"to"`
+}
+
+type jaeger struct {
+	AgentHostPort int `json:"agent_host_port"`
 }

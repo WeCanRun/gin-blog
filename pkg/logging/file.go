@@ -2,19 +2,19 @@ package logging
 
 import (
 	"fmt"
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/pkg/file"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"os"
 	"time"
 )
 
 func getLogFilePath() string {
-	return fmt.Sprintf("%s", setting.APP.LogSavePath)
+	return fmt.Sprintf("%s", global.Setting.APP.LogSavePath)
 }
 
 func getLogFileName() string {
-	return fmt.Sprintf("%s-%s.%s", setting.APP.LogSaveName, time.Now().Format(setting.APP.TimeFormat),
-		setting.APP.LogFileExt)
+	return fmt.Sprintf("%s-%s.%s", global.Setting.APP.LogSaveName, time.Now().Format(global.Setting.APP.LogTimeFormat),
+		global.Setting.APP.LogFileExt)
 }
 
 func openLogFile(filePath, fileName string) (f *os.File, err error) {

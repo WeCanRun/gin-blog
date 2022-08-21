@@ -12,20 +12,14 @@ import (
 )
 
 var (
-	Setting  = setting{}
-	Redis    = redis{}
-	Database = database{}
-	Server   = server{}
-	APP      = app{}
-	Email    = email{}
-
+	_setting              = &Setting{}
 	DefaultConfigFile     = "conf/app-%s.yaml"
 	DefaultConfigFileType = "yaml"
 	Env                   = flag.String("env", "test", "指定环境")
 	Configuration         = flag.String("configuration", "", "指定配置文件")
 )
 
-func Setup(path string) {
+func Setup(path string) *Setting {
 	_type := DefaultConfigFileType
 
 	if path == "" && *Configuration != "" {
@@ -50,8 +44,10 @@ func Setup(path string) {
 	if err := c.initConfig(); err != nil {
 		log.Fatalf("初始化配置文件失败，%v", err)
 	}
+
 	// 监控配置文件变化并热加载程序
 	c.watchConfig()
+	return _setting
 }
 
 type Config struct {
@@ -74,20 +70,21 @@ func (c *Config) initConfig() error {
 
 	c.loadData()
 
-	log.Printf("Setting: %#v", Setting)
+	log.Printf("_setting: %#v", _setting)
 
 	return nil
 }
 
 func (c *Config) loadData() {
-	if err := viper.Unmarshal(&Setting); err != nil {
-		log.Fatalf("laod setting fail:  %v", err)
+	if err := viper.Unmarshal(_setting); err != nil {
+		log.Fatalf("laod Setting fail:  %v", err)
 	}
-	loadApp()
-	loadServer()
-	loadDataBase()
-	loadRedis()
-	loadEmail()
+
+	_setting.Redis.IdleTimeout *= time.Second
+	_setting.Server.ReadTimeout *= time.Second
+	_setting.Server.WriteTimeout *= time.Second
+	_setting.APP.ImageMaxSize *= 1024 * 1024
+
 }
 
 // 监控配置文件变化并热加载程序
@@ -96,29 +93,4 @@ func (c *Config) watchConfig() {
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		c.loadData()
 	})
-}
-
-func loadRedis() {
-	Redis = Setting.Redis
-	Redis.IdleTimeout *= time.Second
-}
-
-func loadDataBase() {
-	Database = Setting.Database
-}
-
-func loadServer() {
-	Server = Setting.Server
-
-	Server.ReadTimeout *= time.Second
-	Server.WriteTimeout *= time.Second
-}
-
-func loadApp() {
-	APP = Setting.APP
-	APP.ImageMaxSize *= 1024 * 1024
-}
-
-func loadEmail() {
-	Email = Setting.Email
 }

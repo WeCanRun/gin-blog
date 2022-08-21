@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/internal/model"
 	"github.com/WeCanRun/gin-blog/internal/server"
 	"github.com/WeCanRun/gin-blog/internal/service/cache_service"
@@ -12,10 +13,13 @@ import (
 	"github.com/WeCanRun/gin-blog/pkg/tracer"
 )
 
-func main() {
-	ctx := context.Background()
+var ctx = context.Background()
+
+func init() {
 	//加载配置文件
-	setting.Setup("")
+	s := setting.Setup("")
+	global.Setting = s
+
 	// 加载日志配置
 	logging.Setup()
 	// 加载数据库
@@ -25,13 +29,14 @@ func main() {
 		logging.Panic(err)
 	}
 
-	tracer.Setup("blog", fmt.Sprintf(":%d", 32769))
+	tracer.Setup("blog", fmt.Sprintf(":%d", global.Setting.Jaeger.AgentHostPort))
 
 	router := server.Init()
 	web.InitRouters(router)
 
+}
+func main() {
 	server.Run(ctx)
-
 	// 定时任务
 	//go func() {
 	//	logging.Info("Starting...Cron Job")
@@ -45,5 +50,4 @@ func main() {
 	//	c.Start()
 	//	select {}
 	//}()
-
 }

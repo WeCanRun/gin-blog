@@ -18,7 +18,7 @@ app:
   LogSavePath: runtime/logs/
   LogSaveName: log
   LogFileExt: log
-  TimeFormat: "2006-01-02"
+  LogTimeFormat: "2006-01-02"
 
   ExportSavePath: export/
   QrCodeSavePath: qr_code/
@@ -50,7 +50,10 @@ email:
   Port: 465
   IsSSL: false
   UserName: 1094124771@qq.com
-  Password: apnrguhkhubebaci
+  Password: xxx
   From: 1094124771@qq.com
   To:
     - 1094124771@qq.com
+
+jaeger:
+  AgentHostPort: 32769

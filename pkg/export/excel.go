@@ -2,7 +2,7 @@ package export
 
 import (
 	"fmt"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
+	"github.com/WeCanRun/gin-blog/global"
 	"time"
 )
 
@@ -15,7 +15,7 @@ func ExportExcelName(name string, date time.Time) string {
 }
 
 func GetExcelSavePath() string {
-	return setting.APP.ExportSavePath
+	return global.Setting.APP.ExportSavePath
 }
 
 func GetExcelSaveUrl(name string) string {
@@ -23,7 +23,7 @@ func GetExcelSaveUrl(name string) string {
 }
 
 func GetExcelRealDir() string {
-	return setting.APP.RuntimeRootPath + GetExcelSavePath()
+	return global.Setting.APP.RuntimeRootPath + GetExcelSavePath()
 }
 
 func GetExcelRealPath(name string) string {
@@ -31,5 +31,5 @@ func GetExcelRealPath(name string) string {
 }
 
 func GetExcelFullUrl(name string) string {
-	return setting.APP.PrefixUrl + GetExcelSavePath() + name
+	return global.Setting.APP.PrefixUrl + GetExcelSavePath() + name
 }

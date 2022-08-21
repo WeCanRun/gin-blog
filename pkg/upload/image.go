@@ -2,9 +2,9 @@ package upload
 
 import (
 	"fmt"
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/pkg/file"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/util"
 	"mime/multipart"
 	"os"
@@ -16,11 +16,11 @@ func GetImageFullUrl(name string) string {
 }
 
 func GetImagePrefix() string {
-	return setting.APP.PrefixUrl
+	return global.Setting.APP.PrefixUrl
 }
 
 func GetImagePath() string {
-	return setting.APP.ImageSavePath
+	return global.Setting.APP.ImageSavePath
 }
 
 func GetImageName(name string) string {
@@ -31,12 +31,12 @@ func GetImageName(name string) string {
 }
 
 func GetImageFullPath() string {
-	return setting.APP.RuntimeRootPath + GetImagePath()
+	return global.Setting.APP.RuntimeRootPath + GetImagePath()
 }
 
 func CheckImageExt(name string) bool {
 	ext := file.GetExt(name)
-	for _, allowExt := range setting.APP.ImageAllowExts {
+	for _, allowExt := range global.Setting.APP.ImageAllowExts {
 		if strings.ToUpper(ext) == strings.ToUpper(allowExt) {
 			return true
 		}
@@ -50,7 +50,7 @@ func CheckImageSize(f multipart.File) bool {
 		logging.Error("file.GetSize fail,%v", err)
 		return false
 	}
-	return size <= int(setting.APP.ImageMaxSize)
+	return size <= int(global.Setting.APP.ImageMaxSize)
 }
 
 func CheckImage(src string) error {

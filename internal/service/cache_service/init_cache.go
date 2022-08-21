@@ -2,8 +2,8 @@ package cache_service
 
 import (
 	"encoding/json"
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/gomodule/redigo/redis"
 	"time"
 )
@@ -13,13 +13,13 @@ var RedisConn *redis.Pool
 func Setup() error {
 	RedisConn = &redis.Pool{
 		Dial: func() (conn redis.Conn, err error) {
-			c, err := redis.Dial("tcp", setting.Redis.Host)
+			c, err := redis.Dial("tcp", global.Setting.Redis.Host)
 			if err != nil {
-				logging.Log().Fatalf("cache_service.Setup | redis [%s] 连接失败", setting.Redis.Host)
+				logging.Log().Fatalf("cache_service.Setup | redis [%s] 连接失败", global.Setting.Redis.Host)
 				return nil, err
 			}
-			if setting.Redis.Password != "" {
-				_, err := c.Do("AUTH", setting.Redis.Password)
+			if global.Setting.Redis.Password != "" {
+				_, err := c.Do("AUTH", global.Setting.Redis.Password)
 				if err != nil {
 					c.Close()
 					logging.Log().Fatal(" cache_service.Setup | redis 连接失败, 密码错误")
@@ -32,9 +32,9 @@ func Setup() error {
 			_, err := c.Do("PING")
 			return err
 		},
-		MaxIdle:     setting.Redis.MaxIdle,
-		MaxActive:   setting.Redis.MaxActive,
-		IdleTimeout: setting.Redis.IdleTimeout,
+		MaxIdle:     global.Setting.Redis.MaxIdle,
+		MaxActive:   global.Setting.Redis.MaxActive,
+		IdleTimeout: global.Setting.Redis.IdleTimeout,
 	}
 
 	return nil

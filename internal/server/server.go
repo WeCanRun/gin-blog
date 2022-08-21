@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	_ "github.com/WeCanRun/gin-blog/docs"
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	gs "github.com/swaggo/gin-swagger"
@@ -22,10 +22,10 @@ func Init() *RouterWarp {
 	router := NewRouter()
 
 	svr = &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.Server.HttpPort),
+		Addr:           fmt.Sprintf(":%d", global.Setting.Server.HttpPort),
 		Handler:        router.Engine(),
-		ReadTimeout:    setting.Server.ReadTimeout,
-		WriteTimeout:   setting.Server.WriteTimeout,
+		ReadTimeout:    global.Setting.Server.ReadTimeout,
+		WriteTimeout:   global.Setting.Server.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 

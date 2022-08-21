@@ -1,15 +1,15 @@
 package util
 
 import (
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/internal/server"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 )
 import "github.com/unknwon/com"
 
 func GetPage(c *server.Context) (result uint) {
 	page, _ := com.StrTo(c.Query("page")).Int()
 	if page > 0 {
-		result = uint((page - 1)) * setting.APP.PageSize
+		result = uint((page - 1)) * global.Setting.APP.PageSize
 	}
 	return
 }
@@ -17,9 +17,9 @@ func GetPage(c *server.Context) (result uint) {
 func GetPageSize(c *server.Context) (res uint) {
 	size, _ := com.StrTo(c.Query("page_size")).Int()
 	if size <= 0 {
-		res = setting.APP.DefaultPageSize
-	} else if uint(size) > setting.APP.MaxPageSize {
-		res = setting.APP.MaxPageSize
+		res = global.Setting.APP.DefaultPageSize
+	} else if uint(size) > global.Setting.APP.MaxPageSize {
+		res = global.Setting.APP.MaxPageSize
 	} else {
 		res = uint(size)
 	}

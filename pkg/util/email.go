@@ -2,8 +2,8 @@ package util
 
 import (
 	"crypto/tls"
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"gopkg.in/gomail.v2"
 )
 
@@ -42,12 +42,12 @@ func (e *Email) Send(to []string, subject, body string) error {
 
 func _default() *Email {
 	return &Email{&SMTPInfo{
-		Host:     setting.Email.Host,
-		Port:     setting.Email.Port,
-		IsSSL:    setting.Email.IsSSL,
-		UserName: setting.Email.UserName,
-		Password: setting.Email.Password,
-		From:     setting.Email.From,
+		Host:     global.Setting.Email.Host,
+		Port:     global.Setting.Email.Port,
+		IsSSL:    global.Setting.Email.IsSSL,
+		UserName: global.Setting.Email.UserName,
+		Password: global.Setting.Email.Password,
+		From:     global.Setting.Email.From,
 	}}
 }
 

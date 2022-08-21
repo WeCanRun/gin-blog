@@ -1,9 +1,9 @@
 package share
 
 import (
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/pkg/file"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
-	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/WeCanRun/gin-blog/pkg/util"
 	"github.com/boombuler/barcode"
 	_ "github.com/boombuler/barcode"
@@ -35,11 +35,11 @@ func NewQrCode(url string, width, height int, level qr.ErrorCorrectionLevel, mod
 }
 
 func GetQrCodePath() string {
-	return setting.APP.QrCodeSavePath
+	return global.Setting.APP.QrCodeSavePath
 }
 
 func GetQrCodeSaveDir() string {
-	return setting.APP.RuntimeRootPath + GetQrCodePath()
+	return global.Setting.APP.RuntimeRootPath + GetQrCodePath()
 }
 
 func GetQrCodeSavePath(name string) string {
@@ -52,7 +52,7 @@ func GetQrCodeFileName(url string) string {
 }
 
 func GetQrCodeFullUrl(name string) string {
-	return setting.APP.PrefixUrl + GetQrCodePath() + name
+	return global.Setting.APP.PrefixUrl + GetQrCodePath() + name
 }
 
 // 获取二维码的文件后缀
