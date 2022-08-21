@@ -37,6 +37,8 @@ database:
   Host: 127.0.0.1:3306
   DbName: blog
   TablePrefix: blog_
+  MaxIdleConns: 10
+  MaxOpenConns: 100
 
 redis:
   Host: 127.0.0.1:6379

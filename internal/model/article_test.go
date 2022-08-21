@@ -2,16 +2,16 @@ package model
 
 import (
 	"context"
+	"github.com/WeCanRun/gin-blog/global"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/go-playground/assert/v2"
 	"github.com/jinzhu/gorm"
 	"testing"
-	"time"
 )
 
 func init() {
-	setting.Setup("../../conf/app-test.yaml")
+	global.Setting = setting.Setup("../../conf/app-test.yaml")
 	logging.Setup()
 	Setup()
 }
@@ -25,11 +25,6 @@ func TestAddData(t *testing.T) {
 
 func TestAddArticle(t *testing.T) {
 	article := Article{
-		Model: gorm.Model{
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-			DeletedAt: nil,
-		},
 		TagId:     1,
 		Title:     "test",
 		Desc:      "test",
@@ -41,8 +36,6 @@ func TestAddArticle(t *testing.T) {
 	if err != nil {
 		t.Log("err: ", err)
 	}
-	newArticle, _ := GetArticleById(context.Background(), article.ID)
-	assert.Equal(t, newArticle.ID, article.ID)
 }
 
 func TestGetArticleById(t *testing.T) {
@@ -88,9 +81,7 @@ func TestGetArticleTotal(t *testing.T) {
 func TestEditArticle(t *testing.T) {
 	article := Article{
 		Model: gorm.Model{
-			ID:        1,
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+			ID: 11,
 		},
 		Content:   "edit",
 		UpdatedBy: "edit",
@@ -100,10 +91,11 @@ func TestEditArticle(t *testing.T) {
 		t.Log(err)
 	}
 	assert.Equal(t, article.Content, "edit")
+	t.Log(article.UpdatedAt)
 }
 
 func TestDeleteArticle(t *testing.T) {
-	if err := DeleteArticle(context.Background(), 2); err != nil {
+	if err := DeleteArticle(context.Background(), 6); err != nil {
 		t.Log(err)
 	} else {
 		t.Log("Success")

@@ -41,7 +41,7 @@ func TestGetTags(t *testing.T) {
 }
 
 func TestDeleteTag(t *testing.T) {
-	err := DeleteTag(context.Background(), 11)
+	err := DeleteTag(context.Background(), 13)
 	if err != nil {
 		t.Log("err", err)
 	}

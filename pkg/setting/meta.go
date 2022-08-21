@@ -41,12 +41,14 @@ type server struct {
 }
 
 type database struct {
-	Type        string `json:"type"`
-	User        string `json:"user"`
-	Password    string `json:"password"`
-	Host        string `json:"host"`
-	DbName      string `json:"db_name"`
-	TablePrefix string `json:"table_prefix"`
+	Type         string `json:"type"`
+	User         string `json:"user"`
+	Password     string `json:"password"`
+	Host         string `json:"host"`
+	DbName       string `json:"db_name"`
+	TablePrefix  string `json:"table_prefix"`
+	MaxIdleConns int    `json:"max_idle_conns"`
+	MaxOpenConns int    `json:"max_open_conns"`
 }
 
 type redis struct {

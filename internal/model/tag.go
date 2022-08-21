@@ -4,7 +4,6 @@ import (
 	"context"
 	otgorm "github.com/EDDYCJY/opentracing-gorm"
 	"github.com/jinzhu/gorm"
-	"time"
 )
 
 //CREATE TABLE `blog_tag` (
@@ -47,7 +46,7 @@ func GetTagsByName(ctx context.Context, name string) (tags []Tag, err error) {
 }
 
 func DeleteTag(ctx context.Context, id uint) (err error) {
-	return otgorm.WithContext(ctx, db).Model(Tag{}).Where("id = ?", id).Update("deleted_at", time.Now()).Error
+	return otgorm.WithContext(ctx, db).Where("id = ?", id).Delete(Tag{}).Error
 }
 
 func AddTag(ctx context.Context, tag Tag) (err error) {

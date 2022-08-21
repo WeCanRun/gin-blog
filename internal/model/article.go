@@ -4,7 +4,6 @@ import (
 	"context"
 	otgorm "github.com/EDDYCJY/opentracing-gorm"
 	"github.com/jinzhu/gorm"
-	"time"
 )
 
 type Article struct {
@@ -58,10 +57,7 @@ func AddArticle(ctx context.Context, article Article) error {
 }
 
 func DeleteArticle(ctx context.Context, id uint) error {
-	return otgorm.WithContext(ctx, db).Model(Article{}).Where("id = ?", id).Updates(map[string]interface{}{
-		"deleted_at": time.Now(),
-		"state":      0,
-	}).Error
+	return otgorm.WithContext(ctx, db).Where("id = ?", id).Delete(Article{}).Error
 }
 
 func EditArticle(ctx context.Context, article Article) error {
