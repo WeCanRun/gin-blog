@@ -8,7 +8,8 @@ import (
 
 // test
 func Ping(ctx *server.Context) error {
-	logging.Info(ctx.ClientIP())
+	logging.Infof("from: %s", ctx.Request.RemoteAddr)
+	panic("PONG")
 	return ctx.Success("pong")
 }
 
@@ -20,7 +21,7 @@ func GetToken(ctx *server.Context) error {
 		logging.Error("GetToken params err")
 		return ctx.ParamsError()
 	}
-	err, token := service.GetTokenWithAuth(username, password)
+	err, token := service.GetTokenWithAuth(ctx, username, password)
 	if len(token) <= 0 {
 		return err
 	}

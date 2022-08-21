@@ -6,7 +6,6 @@ import (
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"time"
 )
 
 type Context struct {
@@ -14,6 +13,16 @@ type Context struct {
 	traceId string
 	spanId  string
 	logger  *logging.Logger
+}
+
+func (ctx *Context) WithContext(c *gin.Context) *Context {
+	if c == nil {
+		panic("nil context")
+	}
+	ctx2 := new(Context)
+	*ctx2 = *ctx
+	ctx2.Context = c
+	return ctx2
 }
 
 func (ctx *Context) OtherError(code int) *errcode.InternalError {
@@ -28,18 +37,19 @@ func (ctx *Context) AuthError() *errcode.InternalError {
 
 func (ctx *Context) Success(data interface{}) *errcode.InternalError {
 	success := errcode.Success
-	ctx.JSON(success.StatusCode(), errcode.NewWithData(success.Code, success.Msg, data))
+	success.Data = data
 	return success
 }
 
 func (ctx *Context) SuccessList(data interface{}) *errcode.InternalError {
 	success := errcode.Success
-	ctx.JSON(success.StatusCode(), errcode.NewWithData(success.Code, success.Msg, data))
+	success.Data = data
 	return success
 }
 
 func (ctx *Context) ServerError(data interface{}) *errcode.InternalError {
 	err := errcode.ServerError
+	err.Data = data
 	return err
 }
 
@@ -54,18 +64,17 @@ func (ctx *Context) Logger() *logging.Logger {
 
 type Handler func(*Context) error
 
-func HandlerWarp(handler ...Handler) gin.HandlerFunc {
+func HandlerWarp(handler Handler) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		start := time.Now()
 		traceId := ctx.Request.Header.Get(constants.TraceId)
 		if len(traceId) == 0 {
-			traceId = uuid.New().String()
+			traceId = uuid.New().String()[:8]
 			ctx.Request.Header.Set(constants.TraceId, traceId)
 		}
 
 		spanId := ctx.Request.Header.Get(constants.SpanId)
 		if len(spanId) == 0 {
-			spanId = uuid.New().String()
+			spanId = uuid.New().String()[:8]
 			ctx.Request.Header.Set(constants.SpanId, spanId)
 		}
 
@@ -73,21 +82,27 @@ func HandlerWarp(handler ...Handler) gin.HandlerFunc {
 			Context: ctx,
 			traceId: traceId,
 			spanId:  spanId,
-			logger:  logging.Log().WithFields(map[string]interface{}{"traceId": traceId, "spanId": spanId}),
+			logger: logging.Log().WithFields(map[string]interface{}{
+				constants.LogFieldTraceId: ctx.Request.Header.Get(constants.TraceId),
+				constants.LogFieldSpanId:  ctx.Request.Header.Get(constants.SpanId)}),
 		}
 
-		var err error
-		for _, h := range handler {
-			if err = h(customCtx); err != nil {
-				ierr, ok := err.(*errcode.InternalError)
-				if !ok {
-					ierr = customCtx.ServerError(err)
-				}
-				ctx.AbortWithStatusJSON(ierr.StatusCode(), errcode.NewWithData(ierr.Code, ierr.Msg, ierr.Data))
+		if err := handler(customCtx); err == nil {
+			customCtx.JSON(errcode.Success.StatusCode(), errcode.Success)
+
+		} else {
+			ierr, ok := err.(*errcode.InternalError)
+			if !ok {
+				ierr = customCtx.ServerError(err.Error())
+			}
+
+			if ierr != nil {
+				ctx.JSON(ierr.StatusCode(), ierr)
+			} else {
+				customCtx.Logger().Warn("Should not return nil")
 			}
 		}
 
-		spend := time.Now().Sub(start).Milliseconds()
-		logging.Infof("Spend time: %d, response: %#v", spend, err)
+		customCtx.Logger().Debug("HandlerWarp")
 	}
 }

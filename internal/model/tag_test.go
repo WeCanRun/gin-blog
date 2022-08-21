@@ -1,13 +1,14 @@
 package model
 
 import (
+	"context"
 	"github.com/go-playground/assert/v2"
 	"github.com/jinzhu/gorm"
 	"testing"
 )
 
 func TestAddTag(t *testing.T) {
-	err := AddTag(Tag{
+	err := AddTag(context.Background(), Tag{
 		Name:      "test",
 		CreatedBy: "test",
 		State:     1,
@@ -19,7 +20,7 @@ func TestAddTag(t *testing.T) {
 }
 
 func TestEditTag(t *testing.T) {
-	err := EditTag(Tag{
+	err := EditTag(context.Background(), Tag{
 		Model:     gorm.Model{ID: 11},
 		Name:      "test2",
 		UpdatedBy: "test2",
@@ -32,7 +33,7 @@ func TestEditTag(t *testing.T) {
 }
 
 func TestGetTags(t *testing.T) {
-	tags, err := GetTags(1, 10)
+	tags, err := GetTags(context.Background(), 1, 10)
 	if err != nil {
 		t.Log(err)
 	}
@@ -40,7 +41,7 @@ func TestGetTags(t *testing.T) {
 }
 
 func TestDeleteTag(t *testing.T) {
-	err := DeleteTag(11)
+	err := DeleteTag(context.Background(), 11)
 	if err != nil {
 		t.Log("err", err)
 	}
@@ -48,7 +49,7 @@ func TestDeleteTag(t *testing.T) {
 }
 
 func TestGetTagTotal(t *testing.T) {
-	tags, err := GetTagsByName("test")
+	tags, err := GetTagsByName(context.Background(), "test")
 	if err != nil {
 		t.Log("err", err)
 	}
@@ -57,12 +58,12 @@ func TestGetTagTotal(t *testing.T) {
 }
 
 func TestExitTagWithName(t *testing.T) {
-	is := ExitTagWithName("test")
+	is := ExitTagWithName(context.Background(), "test")
 	assert.Equal(t, is, true)
 }
 
 func TestGetTagById(t *testing.T) {
-	tag, err := GetTagById(12)
+	tag, err := GetTagById(context.Background(), 12)
 	if err != nil {
 		t.Log("Err: ", err)
 	}
@@ -70,7 +71,7 @@ func TestGetTagById(t *testing.T) {
 }
 
 func TestGetTagsByIds(t *testing.T) {
-	names, err := GetTagsByIds([]uint{11, 12, 13})
+	names, err := GetTagsByIds(context.Background(), []uint{11, 12, 13})
 	if err != nil {
 		assert.Equal(t, true, gorm.IsRecordNotFoundError(err))
 	}

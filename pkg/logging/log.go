@@ -15,7 +15,7 @@ import (
 var (
 	File               *os.File
 	DefaultPrefix      = ""
-	DefaultCallerDepth = 2
+	DefaultCallerDepth = 4
 	l                  *Logger
 	logPrefix          = ""
 )
@@ -135,9 +135,7 @@ func (l *Logger) JSONFormat(level Level, message string) Fields {
 	data := make(Fields, len(l.fields)+3)
 	data["level"] = level.String()
 	data["content"] = message
-	if l.callers == nil {
-		l.callers = l.WithCaller(4).callers
-	}
+	l.callers = l.WithCaller(DefaultCallerDepth).callers
 	data["callers"] = l.callers
 
 	for k, v := range l.fields {

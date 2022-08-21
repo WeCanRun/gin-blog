@@ -3,11 +3,10 @@ package setting
 import (
 	"flag"
 	"fmt"
+	"github.com/WeCanRun/gin-blog/pkg/file"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"log"
-	"os"
-	"runtime"
 	"strings"
 	"time"
 )
@@ -18,8 +17,9 @@ var (
 	Database = database{}
 	Server   = server{}
 	APP      = app{}
+	Email    = email{}
 
-	DefaultConfigFile     = "/conf/app-%s.yaml"
+	DefaultConfigFile     = "conf/app-%s.yaml"
 	DefaultConfigFileType = "yaml"
 	Env                   = flag.String("env", "test", "指定环境")
 	Configuration         = flag.String("configuration", "", "指定配置文件")
@@ -33,14 +33,8 @@ func Setup(path string) {
 	}
 
 	if path == "" {
-		pwd, _ := os.Getwd()
-		base := pwd
-		file := fmt.Sprintf(DefaultConfigFile, *Env)
-
-		path = base + file
-		if runtime.GOOS == "windows" {
-			path = strings.ReplaceAll(path, "/", "\\")
-		}
+		f := fmt.Sprintf(DefaultConfigFile, *Env)
+		path = file.CoverToAbs(f)
 	}
 
 	if path != "" {
@@ -93,21 +87,14 @@ func (c *Config) loadData() {
 	loadServer()
 	loadDataBase()
 	loadRedis()
+	loadEmail()
 }
 
 // 监控配置文件变化并热加载程序
 func (c *Config) watchConfig() {
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		log.Printf("config file changed: %s\n", e.Name)
-		if err := viper.Unmarshal(&Setting); err != nil {
-			log.Printf("err: %v\n", err)
-			return
-		}
-		loadApp()
-		loadServer()
-		loadDataBase()
-		loadRedis()
+		c.loadData()
 	})
 }
 
@@ -130,4 +117,8 @@ func loadServer() {
 func loadApp() {
 	APP = Setting.APP
 	APP.ImageMaxSize *= 1024 * 1024
+}
+
+func loadEmail() {
+	Email = Setting.Email
 }

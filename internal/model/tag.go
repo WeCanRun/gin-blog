@@ -1,6 +1,8 @@
 package model
 
 import (
+	"context"
+	otgorm "github.com/EDDYCJY/opentracing-gorm"
 	"github.com/jinzhu/gorm"
 	"time"
 )
@@ -34,42 +36,42 @@ type Tag struct {
 //}
 
 // 获取所有文章标签
-func GetTags(pageNum uint, pageSize uint) (tags []Tag, err error) {
-	err = db.Where("state = ?", 1).Offset(pageNum).Limit(pageSize).Find(&tags).Error
+func GetTags(ctx context.Context, pageNum uint, pageSize uint) (tags []Tag, err error) {
+	err = otgorm.WithContext(ctx, db).Where("state = ?", 1).Offset(pageNum).Limit(pageSize).Find(&tags).Error
 	return
 }
 
-func GetTagsByName(name string) (tags []Tag, err error) {
-	err = db.Model(Tag{}).Where("name = ?", name).Find(&tags).Error
+func GetTagsByName(ctx context.Context, name string) (tags []Tag, err error) {
+	err = otgorm.WithContext(ctx, db).Model(Tag{}).Where("name = ?", name).Find(&tags).Error
 	return
 }
 
-func DeleteTag(id uint) (err error) {
-	return db.Model(Tag{}).Where("id = ?", id).Update("deleted_at", time.Now()).Error
+func DeleteTag(ctx context.Context, id uint) (err error) {
+	return otgorm.WithContext(ctx, db).Model(Tag{}).Where("id = ?", id).Update("deleted_at", time.Now()).Error
 }
 
-func AddTag(tag Tag) (err error) {
-	err = db.Model(tag).Create(&tag).Error
+func AddTag(ctx context.Context, tag Tag) (err error) {
+	err = otgorm.WithContext(ctx, db).Model(tag).Create(&tag).Error
 	return
 }
 
-func EditTag(tag Tag) (err error) {
-	err = db.Model(tag).Where("id = ?", tag.ID).Updates(&tag).Error
+func EditTag(ctx context.Context, tag Tag) (err error) {
+	err = otgorm.WithContext(ctx, db).Model(tag).Where("id = ?", tag.ID).Updates(&tag).Error
 	return
 }
 
-func GetTagById(id uint) (tag Tag, err error) {
-	err = db.Select("*").Where(" id = ?", id).First(&tag).Error
+func GetTagById(ctx context.Context, id uint) (tag Tag, err error) {
+	err = otgorm.WithContext(ctx, db).Select("*").Where(" id = ?", id).First(&tag).Error
 	return
 }
 
-func GetTagsByIds(ids []uint) (tags []Tag, err error) {
-	err = db.Select("name").Where("id in (?)", ids).Find(&tags).Error
+func GetTagsByIds(ctx context.Context, ids []uint) (tags []Tag, err error) {
+	err = otgorm.WithContext(ctx, db).Select("name").Where("id in (?)", ids).Find(&tags).Error
 	return
 }
 
-func ExitTagWithName(name string) (is bool) {
+func ExitTagWithName(ctx context.Context, name string) (is bool) {
 	var tag Tag
-	db.Select("id").Where(" name = ?", name).First(&tag)
+	otgorm.WithContext(ctx, db).Select("id").Where(" name = ?", name).First(&tag)
 	return tag.ID > 0
 }

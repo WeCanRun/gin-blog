@@ -2,15 +2,18 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/WeCanRun/gin-blog/internal/model"
 	"github.com/WeCanRun/gin-blog/internal/server"
 	"github.com/WeCanRun/gin-blog/internal/service/cache_service"
 	"github.com/WeCanRun/gin-blog/internal/web"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
+	"github.com/WeCanRun/gin-blog/pkg/tracer"
 )
 
 func main() {
+	ctx := context.Background()
 	//加载配置文件
 	setting.Setup("")
 	// 加载日志配置
@@ -22,10 +25,11 @@ func main() {
 		logging.Panic(err)
 	}
 
+	tracer.Setup("blog", fmt.Sprintf(":%d", 32769))
+
 	router := server.Init()
 	web.InitRouters(router)
 
-	ctx := context.Background()
 	server.Run(ctx)
 
 	// 定时任务

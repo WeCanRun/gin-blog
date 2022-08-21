@@ -1,6 +1,8 @@
 package model
 
 import (
+	"context"
+	otgorm "github.com/EDDYCJY/opentracing-gorm"
 	"github.com/jinzhu/gorm"
 	"time"
 )
@@ -17,51 +19,51 @@ type Article struct {
 	gorm.Model
 }
 
-func GetArticles(pageNum, pageSize uint) (articles []Article, err error) {
-	err = db.Select("*").
+func GetArticles(ctx context.Context, pageNum, pageSize uint) (articles []Article, err error) {
+	err = otgorm.WithContext(ctx, db).Select("*").
 		Where("state = 1").
 		Offset(pageNum).Limit(pageSize).Find(&articles).Error
 	return
 }
 
-func GetArticleById(id uint) (article Article, err error) {
-	err = db.Select("*").Where("id = ?", id).First(&article).Error
+func GetArticleById(ctx context.Context, id uint) (article Article, err error) {
+	err = otgorm.WithContext(ctx, db).Select("*").Where("id = ?", id).First(&article).Error
 	return
 }
 
 // 根据 maps 获取文章总数
-func GetArticleTotal(maps Article) (count uint) {
-	db.Model(&Article{}).Where(maps).Count(&count)
+func GetArticleTotal(ctx context.Context, maps Article) (count uint) {
+	otgorm.WithContext(ctx, db).Model(&Article{}).Where(maps).Count(&count)
 	return
 }
 
-func GetArticleByTagId(tagId uint, state int) (article []Article, err error) {
-	err = db.Select("*").Where("tag_id = ? and state = ?", tagId, state).Find(&article).Error
+func GetArticleByTagId(ctx context.Context, tagId uint, state int) (article []Article, err error) {
+	err = otgorm.WithContext(ctx, db).Select("*").Where("tag_id = ? and state = ?", tagId, state).Find(&article).Error
 	return
 }
 
-func GetArticleByTitle(title string, state int) (article []Article, err error) {
-	err = db.Select("*").Where("title = ? and state = ?", title, state).Find(&article).Error
+func GetArticleByTitle(ctx context.Context, title string, state int) (article []Article, err error) {
+	err = otgorm.WithContext(ctx, db).Select("*").Where("title = ? and state = ?", title, state).Find(&article).Error
 	return
 }
 
-func ExitArticleWithTitle(name string) bool {
+func ExitArticleWithTitle(ctx context.Context, name string) bool {
 	var article Article
-	db.Select("id").Where("title = ?", name).First(&article)
+	otgorm.WithContext(ctx, db).Select("id").Where("title = ?", name).First(&article)
 	return article.ID > 0
 }
 
-func AddArticle(article Article) error {
-	return db.Create(&article).Error
+func AddArticle(ctx context.Context, article Article) error {
+	return otgorm.WithContext(ctx, db).Create(&article).Error
 }
 
-func DeleteArticle(id uint) error {
-	return db.Model(Article{}).Where("id = ?", id).Updates(map[string]interface{}{
+func DeleteArticle(ctx context.Context, id uint) error {
+	return otgorm.WithContext(ctx, db).Model(Article{}).Where("id = ?", id).Updates(map[string]interface{}{
 		"deleted_at": time.Now(),
 		"state":      0,
 	}).Error
 }
 
-func EditArticle(article Article) error {
-	return db.Model(article).Updates(&article).Where("id = ?", article.ID).Error
+func EditArticle(ctx context.Context, article Article) error {
+	return otgorm.WithContext(ctx, db).Model(article).Updates(&article).Where("id = ?", article.ID).Error
 }

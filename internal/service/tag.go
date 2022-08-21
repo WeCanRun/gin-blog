@@ -19,11 +19,11 @@ import (
 	"time"
 )
 
-func GetTags(c *server.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse, err error) {
-	pageNum := util.GetPage(c)
+func GetTags(ctx *server.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse, err error) {
+	pageNum := util.GetPage(ctx)
 	pageSize := setting.APP.PageSize
 
-	tags, err := model.GetTags(pageNum, pageSize)
+	tags, err := model.GetTags(ctx.Request.Context(), pageNum, pageSize)
 	if err != nil {
 		logging.Error("services#GetTags fail %v", err)
 		return
@@ -55,7 +55,7 @@ func GetTag(ctx *server.Context, id uint) (resp dto.GetTagResponse, err error) {
 		return
 	}
 
-	tag, err = model.GetTagById(id)
+	tag, err = model.GetTagById(ctx.Request.Context(), id)
 	if err != nil {
 		logging.Error("models#GetTagById fail, %v", err)
 		return
@@ -77,7 +77,7 @@ func AddTag(ctx *server.Context, req *dto.AddTagRequest) (err error) {
 		return
 	}
 	// todo 其他敏感词校验
-	err = model.AddTag(model.Tag{
+	err = model.AddTag(ctx.Request.Context(), model.Tag{
 		Name:      req.Name,
 		CreatedBy: req.CreatedBy,
 		State:     req.State,
@@ -87,7 +87,7 @@ func AddTag(ctx *server.Context, req *dto.AddTagRequest) (err error) {
 
 func DeleteTag(ctx *server.Context, id uint) (err error) {
 	// todo 各种校验
-	err = model.DeleteTag(id)
+	err = model.DeleteTag(ctx.Request.Context(), id)
 	if err != nil {
 		logging.Error("DeleteTag | model.DeleteTag fail, err:%v", err)
 		return
@@ -104,7 +104,7 @@ func DeleteTag(ctx *server.Context, id uint) (err error) {
 
 func EditTag(ctx *server.Context, request *dto.EditRequest) (err error) {
 	// todo 各种校验
-	err = model.EditTag(model.Tag{
+	err = model.EditTag(ctx.Request.Context(), model.Tag{
 		Model:     gorm.Model{ID: request.ID},
 		Name:      request.Name,
 		UpdatedBy: request.UpdatedBy,
@@ -115,7 +115,7 @@ func EditTag(ctx *server.Context, request *dto.EditRequest) (err error) {
 		return
 	}
 
-	tag, err := model.GetTagById(request.ID)
+	tag, err := model.GetTagById(ctx.Request.Context(), request.ID)
 	if err != nil {
 		logging.Error("EditTag | model.GetTagById fail, err:%v", err)
 	}
@@ -129,8 +129,8 @@ func EditTag(ctx *server.Context, request *dto.EditRequest) (err error) {
 }
 
 // 根据名字导出标签
-func ExportTags(name string, state int) (dto.ExportTagsResponse, error) {
-	tags, err := model.GetTagsByName(name)
+func ExportTags(ctx *server.Context, name string, state int) (dto.ExportTagsResponse, error) {
+	tags, err := model.GetTagsByName(ctx.Request.Context(), name)
 	if err != nil {
 		logging.Error("ExportTags |  model.GetTagsByName fail, err:%v", err)
 		return dto.ExportTagsResponse{}, err
@@ -191,7 +191,7 @@ func ExportTags(name string, state int) (dto.ExportTagsResponse, error) {
 }
 
 // 导入标签信息
-func ImportTags(r io.Reader) error {
+func ImportTags(ctx *server.Context, r io.Reader) error {
 	excel, err := excelize.OpenReader(r)
 	if err != nil {
 		logging.Error("ImportTags | excelize.OpenReader fail, err:%v", err)
@@ -212,7 +212,7 @@ func ImportTags(r io.Reader) error {
 				logging.Error("ImportTags | 数据解析错误, data:%v", data)
 				continue
 			}
-			model.AddTag(model.Tag{
+			model.AddTag(ctx.Request.Context(), model.Tag{
 				Name:      data[1],
 				CreatedBy: data[2],
 				State:     1,

@@ -24,6 +24,7 @@ func JWT() server.Handler {
 			return e.ErrorAuthCheckTokenTimeout
 		}
 		ctx.Next()
+
 		return e.Success
 	}
 }

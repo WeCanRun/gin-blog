@@ -1,12 +1,15 @@
 package web
 
 import (
+	"github.com/WeCanRun/gin-blog/internal/middleware"
 	"github.com/WeCanRun/gin-blog/internal/server"
 	v1 "github.com/WeCanRun/gin-blog/internal/web/v1"
 	"github.com/WeCanRun/gin-blog/pkg/export"
+	"github.com/WeCanRun/gin-blog/pkg/limiter"
 	"github.com/WeCanRun/gin-blog/pkg/share"
 	"github.com/WeCanRun/gin-blog/pkg/upload"
 	"net/http"
+	"time"
 )
 
 // @title           Swagger Example API
@@ -24,6 +27,19 @@ import (
 // @host      localhost:8000
 // @BasePath  /api/v1
 func InitRouters(router *server.RouterWarp) {
+
+	// use middleware
+	router.Use(middleware.AccessLog())
+	router.Use(middleware.Recovery())
+	router.Use(middleware.Tracer())
+	router.Use(middleware.Limiter(limiter.NewMethodLimiter().AddBuckets(limiter.BucketRule{
+		Key:          "/auth",
+		FillInterval: time.Second,
+		Capacity:     100,
+		Quantum:      10,
+	})))
+
+	router.Use(middleware.TimeOut())
 
 	router.GET("/ping", v1.Ping)
 

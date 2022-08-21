@@ -2,6 +2,7 @@ package errcode
 
 import (
 	"fmt"
+	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"net/http"
 )
 
@@ -12,10 +13,8 @@ func New(code int, msg string) *InternalError {
 }
 
 func NewWithData(code int, msg string, data interface{}) *InternalError {
-	if e, ok := codes[code]; ok {
-		e.Msg = msg
-		e.Data = data
-		return e
+	if _, ok := codes[code]; ok {
+		logging.Panicf("Code[%d] is exist ", code)
 	}
 
 	err := &InternalError{
@@ -23,6 +22,8 @@ func NewWithData(code int, msg string, data interface{}) *InternalError {
 		Msg:  msg,
 		Data: data,
 	}
+
+	codes[code] = err
 
 	return err
 }

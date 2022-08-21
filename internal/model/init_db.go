@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	otgorm "github.com/EDDYCJY/opentracing-gorm"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/jinzhu/gorm"
@@ -31,6 +32,8 @@ func Setup() {
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
 	AutoBuildTable()
+	otgorm.AddGormCallbacks(db)
+
 }
 
 func AutoBuildTable() {

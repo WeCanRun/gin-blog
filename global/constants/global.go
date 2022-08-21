@@ -1,6 +1,9 @@
 package constants
 
 const (
-	SpanId  = "SpanId"
-	TraceId = "TraceId"
+	SpanId         = "X-Request-SpanId"
+	LogFieldSpanId = "span_id"
+
+	TraceId         = "X-Request-TraceId"
+	LogFieldTraceId = "trace_id"
 )

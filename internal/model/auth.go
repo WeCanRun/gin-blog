@@ -1,6 +1,8 @@
 package model
 
 import (
+	"context"
+	otgorm "github.com/EDDYCJY/opentracing-gorm"
 	"log"
 )
 
@@ -10,20 +12,20 @@ type Auth struct {
 	Password string `json:"password"`
 }
 
-func CreteTable() error {
-	return db.CreateTable(&Auth{}).Error
+func CreteTable(ctx context.Context) error {
+	return otgorm.WithContext(ctx, db).CreateTable(&Auth{}).Error
 }
 
-func AddAuth(username, password string) error {
-	return db.Create(&Auth{
+func AddAuth(ctx context.Context, username, password string) error {
+	return otgorm.WithContext(ctx, db).Create(&Auth{
 		Username: username,
 		Password: password,
 	}).Error
 }
 
-func CheckAuth(username, password string) bool {
+func CheckAuth(ctx context.Context, username, password string) bool {
 	var auth Auth
-	err := db.Select("id").Where(Auth{Username: username, Password: password}).First(&auth).Error
+	err := otgorm.WithContext(ctx, db).Select("id").Where(Auth{Username: username, Password: password}).First(&auth).Error
 	if err != nil {
 		log.Printf("CheckAuth fail, %v", err)
 	}

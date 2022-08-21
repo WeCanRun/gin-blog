@@ -44,3 +44,13 @@ redis:
   MaxIdle: 30
   MaxActive: 30
   IdleTimeout: 200
+
+email:
+  Host: smtp.qq.com
+  Port: 465
+  IsSSL: false
+  UserName: 1094124771@qq.com
+  Password: apnrguhkhubebaci
+  From: 1094124771@qq.com
+  To:
+    - 1094124771@qq.com

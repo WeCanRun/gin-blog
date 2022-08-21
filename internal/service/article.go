@@ -17,7 +17,7 @@ const QRCODE_URL = "https://github.com/WeCanRun/gin-blog%E7%B3%BB%E5%88%97%E7%9B
 func GetArticles(ctx *server.Context, req *dto.GetArticlesRequest) (resp dto.GetArticlesResponse, err error) {
 	pageNum := util.GetPage(ctx)
 	pageSize := util.GetPageSize(ctx)
-	articles, err := model.GetArticles(pageNum, pageSize)
+	articles, err := model.GetArticles(ctx.Request.Context(), pageNum, pageSize)
 	if err != nil {
 		return
 	}
@@ -26,7 +26,7 @@ func GetArticles(ctx *server.Context, req *dto.GetArticlesRequest) (resp dto.Get
 		resp.Titles = append(resp.Titles, article.Title)
 		resp.TagIds = append(resp.TagIds, article.TagId)
 	}
-	tags, err := model.GetTagsByIds(resp.TagIds)
+	tags, err := model.GetTagsByIds(ctx.Request.Context(), resp.TagIds)
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			resp.TagIds = nil
@@ -51,7 +51,7 @@ func GetArticle(ctx *server.Context, id uint) (model.Article, error) {
 	if article.ID > 0 {
 		return article, nil
 	}
-	article, err := model.GetArticleById(id)
+	article, err := model.GetArticleById(ctx.Request.Context(), id)
 	if err != nil {
 		logging.Error("GetArticle | model.GetArticleById fail, err:%v", err)
 		return article, err
@@ -66,7 +66,7 @@ func GetArticle(ctx *server.Context, id uint) (model.Article, error) {
 
 func AddArticle(ctx *server.Context, req *dto.AddArticleRequest) error {
 	// todo 各种逻辑校验
-	return model.AddArticle(model.Article{
+	return model.AddArticle(ctx.Request.Context(), model.Article{
 		TagId:         req.TagId,
 		Title:         req.Title,
 		Desc:          req.Desc,
@@ -92,12 +92,12 @@ func EditArticle(ctx *server.Context, req *dto.EditArticleRequest) error {
 		State:         req.State,
 	}
 
-	err := model.EditArticle(updateArticle)
+	err := model.EditArticle(ctx.Request.Context(), updateArticle)
 	if err != nil {
 		return err
 	}
 
-	article, err := model.GetArticleById(req.ID)
+	article, err := model.GetArticleById(ctx.Request.Context(), req.ID)
 	if err != nil {
 		logging.Error("EditArticle |  model.GetArticleById fail, err%v", err)
 	}
@@ -112,7 +112,7 @@ func EditArticle(ctx *server.Context, req *dto.EditArticleRequest) error {
 
 func DeleteArticle(ctx *server.Context, id uint) error {
 	// todo 各种逻辑校验
-	err := model.DeleteArticle(id)
+	err := model.DeleteArticle(ctx.Request.Context(), id)
 	if err != nil {
 		logging.Error("DeleteArticle | model.DeleteArticle fail, err:%v", err)
 		return err
@@ -149,10 +149,6 @@ func GenPoster(req *dto.GenArticlePosterReq) (dto.GenArticlePosterResp, error) {
 		return resp, err
 	}
 	logging.Info("GenPoster | src:%v", path+posterName)
-	if err != nil {
-		logging.Error("GenPoster#qrc.Encode | 生成海报失败, err:%v", err)
-		return resp, err
-	}
 
 	resp.PosterSaveUrl = share.GetQrCodeSavePath(posterName)
 	resp.PosterUrl = share.GetQrCodeFullUrl(posterName)

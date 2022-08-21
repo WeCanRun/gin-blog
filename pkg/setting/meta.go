@@ -7,6 +7,7 @@ type setting struct {
 	Server   server
 	Database database
 	Redis    redis
+	Email    email
 }
 
 type app struct {
@@ -51,4 +52,14 @@ type redis struct {
 	MaxIdle     int           `json:"max_idle"`
 	MaxActive   int           `json:"max_active"`
 	IdleTimeout time.Duration `json:"idle_timeout"`
+}
+
+type email struct {
+	Host     string   `json:"host"`
+	Port     int      `json:"port"`
+	IsSSL    bool     `json:"is_ssl"`
+	UserName string   `json:"user_name"`
+	Password string   `json:"password"`
+	From     string   `json:"from"`
+	To       []string `json:"to"`
 }

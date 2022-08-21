@@ -6,6 +6,8 @@ import (
 	"mime/multipart"
 	"os"
 	"path"
+	"runtime"
+	"strings"
 )
 
 func GetSize(f multipart.File) (int, error) {
@@ -57,4 +59,15 @@ func MustOpen(path, name string) (*os.File, error) {
 		return file, err
 	}
 	return file, nil
+}
+
+func CoverToAbs(relative string) string {
+	relative = strings.ReplaceAll(relative, "./", "")
+	relative = strings.ReplaceAll(relative, "../", "")
+	base, _ := os.Getwd()
+	abs := base + "/" + relative
+	if runtime.GOOS == "windows" {
+		abs = strings.ReplaceAll(abs, "/", "\\")
+	}
+	return abs
 }

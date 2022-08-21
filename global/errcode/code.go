@@ -14,4 +14,6 @@ var (
 	ErrorAuthCheckTokenTimeout = New(20002, "Token已超时")
 	ErrorAuthToken             = New(20003, "Token生成失败")
 	ErrorAuth                  = New(20004, "Token错误")
+
+	TooManyRequests = New(30001, "超出请求限制")
 )

@@ -27,7 +27,6 @@ func GetTags(ctx *server.Context) error {
 }
 
 // 获取指定标签
-// ShowAccount godoc
 // @Summary      Show an tag
 // @Description  get tag by ID
 // @Tags         tag
@@ -124,7 +123,7 @@ func ExportTags(ctx *server.Context) error {
 		logging.Error("ExportTags | 参数错误, req:%v", req)
 		return ctx.ParamsError()
 	}
-	resp, err := service.ExportTags(req.Name, req.State)
+	resp, err := service.ExportTags(ctx, req.Name, req.State)
 	if err != nil {
 		logging.Error("ExportTags | ExportTags fail, err:%v", err)
 		return ctx.ServerError("服务错误")
@@ -140,8 +139,8 @@ func ImportTag(ctx *server.Context) error {
 		return ctx.ParamsError()
 	}
 
-	if err := service.ImportTags(file); err != nil {
-		logging.Error("ImportTag | servicreturn ctx.ImportTags fail, err:%v", err)
+	if err := service.ImportTags(ctx, file); err != nil {
+		logging.Error("ImportTag | service.ImportTags fail, err:%v", err)
 		return ctx.ServerError("导入标签失败")
 	}
 

@@ -20,6 +20,8 @@ replace (
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize/v2 v2.3.1
+	github.com/EDDYCJY/opentracing-gorm v0.0.0-20200209122056-516a807d2182
+	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/boombuler/barcode v1.0.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.5.4
@@ -31,17 +33,24 @@ require (
 	github.com/gomodule/redigo v1.8.2
 	github.com/google/uuid v1.1.2
 	github.com/jinzhu/gorm v1.9.16
+	github.com/juju/ratelimit v1.0.2
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/opentracing/opentracing-go v1.2.0
+	github.com/smacker/opentracing-gorm v0.0.0-20181207094635-cd4974441042 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/viper v1.12.0
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.1
 	github.com/swaggo/swag v1.8.4
 	github.com/tealeg/xlsx v1.0.5
+	github.com/uber/jaeger-client-go v2.30.0+incompatible
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/unknwon/com v1.0.1
 	github.com/urfave/cli/v2 v2.11.1 // indirect
 	golang.org/x/net v0.0.0-20220728211354-c7608f3a8462 // indirect
 	golang.org/x/tools v0.1.12 // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 

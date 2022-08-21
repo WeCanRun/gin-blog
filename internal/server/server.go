@@ -29,8 +29,6 @@ func Init() *RouterWarp {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	// use middleware
-
 	// other
 
 	return router
@@ -85,8 +83,8 @@ func (w *RouterWarp) GET(path string, handler Handler) {
 	w.gh.GET(path, HandlerWarp(handler))
 }
 
-func (w *RouterWarp) Use(handlers ...Handler) {
-	w.gh.Use(HandlerWarp(handlers...))
+func (w *RouterWarp) Use(handlers ...gin.HandlerFunc) {
+	w.gh.Use(handlers...)
 }
 
 func (w *RouterWarp) Handle(method, path string, handler Handler) {
@@ -129,8 +127,8 @@ func (w *RouterWarp) StaticFS(path string, fs http.FileSystem) {
 	w.gh.StaticFS(path, fs)
 }
 
-func (w *RouterWarp) Group(path string, handlers ...Handler) *RouterWarp {
-	w.gh.RouterGroup = *w.gh.Group(path, HandlerWarp(handlers...))
+func (w *RouterWarp) Group(path string) *RouterWarp {
+	w.gh.RouterGroup = *w.gh.Group(path)
 	return &RouterWarp{
 		gh: w.gh,
 	}

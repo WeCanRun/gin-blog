@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/setting"
 	"github.com/go-playground/assert/v2"
@@ -36,16 +37,16 @@ func TestAddArticle(t *testing.T) {
 		CreatedBy: "test",
 		State:     1,
 	}
-	err := AddArticle(article)
+	err := AddArticle(context.Background(), article)
 	if err != nil {
 		t.Log("err: ", err)
 	}
-	newArticle, _ := GetArticleById(article.ID)
+	newArticle, _ := GetArticleById(context.Background(), article.ID)
 	assert.Equal(t, newArticle.ID, article.ID)
 }
 
 func TestGetArticleById(t *testing.T) {
-	article, err := GetArticleById(1)
+	article, err := GetArticleById(context.Background(), 1)
 	if err != nil {
 		t.Log("err:", err)
 	}
@@ -53,7 +54,7 @@ func TestGetArticleById(t *testing.T) {
 }
 
 func TestGetArticleByTitle(t *testing.T) {
-	articles, err := GetArticleByTitle("test", 1)
+	articles, err := GetArticleByTitle(context.Background(), "test", 1)
 	if err != nil {
 		t.Log(err)
 	}
@@ -63,7 +64,7 @@ func TestGetArticleByTitle(t *testing.T) {
 }
 
 func TestGetArticleByTagId(t *testing.T) {
-	articles, err := GetArticleByTagId(1, 1)
+	articles, err := GetArticleByTagId(context.Background(), 1, 1)
 	if err != nil {
 		t.Log(err)
 	}
@@ -73,12 +74,12 @@ func TestGetArticleByTagId(t *testing.T) {
 }
 
 func TestExitArticleWithTitle(t *testing.T) {
-	isExit := ExitArticleWithTitle("test")
+	isExit := ExitArticleWithTitle(context.Background(), "test")
 	assert.Equal(t, isExit, true)
 }
 
 func TestGetArticleTotal(t *testing.T) {
-	total := GetArticleTotal(Article{
+	total := GetArticleTotal(context.Background(), Article{
 		State: 1,
 	})
 	t.Log(total)
@@ -95,14 +96,14 @@ func TestEditArticle(t *testing.T) {
 		UpdatedBy: "edit",
 		State:     0,
 	}
-	if err := EditArticle(article); err != nil {
+	if err := EditArticle(context.Background(), article); err != nil {
 		t.Log(err)
 	}
 	assert.Equal(t, article.Content, "edit")
 }
 
 func TestDeleteArticle(t *testing.T) {
-	if err := DeleteArticle(2); err != nil {
+	if err := DeleteArticle(context.Background(), 2); err != nil {
 		t.Log(err)
 	} else {
 		t.Log("Success")
@@ -111,7 +112,7 @@ func TestDeleteArticle(t *testing.T) {
 }
 
 func TestGetArticles(t *testing.T) {
-	articles, err := GetArticles(0, 10)
+	articles, err := GetArticles(context.Background(), 0, 10)
 	if err != nil {
 		t.Log(err)
 	}

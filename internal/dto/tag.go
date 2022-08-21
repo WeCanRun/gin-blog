@@ -16,9 +16,9 @@ type GetTagsResponse struct {
 }
 
 type AddTagRequest struct {
-	Name      string `json:"name" binding:"required"`
-	CreatedBy string `json:"created_by"`
-	State     int    `json:"state"`
+	Name      string `json:"name" binding:"required" minLength:"4" maxLength:"16" example:"random string"`
+	CreatedBy string `json:"created_by" mininum:"1" default:"2"`
+	State     int    `json:"state" mininum:"0" default:"1"`
 }
 
 type EditRequest struct {
