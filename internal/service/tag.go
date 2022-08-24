@@ -20,7 +20,7 @@ import (
 )
 
 func GetTags(ctx *server.Context, req *dto.GetTagsRequest) (resp *dto.GetTagsResponse, err error) {
-	pageNum := util.GetPage(ctx)
+	pageNum := util.GetPage(ctx.Context)
 	pageSize := global.Setting.APP.PageSize
 
 	tags, err := model.GetTags(ctx.Request.Context(), pageNum, pageSize)

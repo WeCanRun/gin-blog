@@ -6,6 +6,7 @@ import (
 	"github.com/WeCanRun/gin-blog/internal/server"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"github.com/WeCanRun/gin-blog/pkg/upload"
+	"github.com/pkg/errors"
 	"mime/multipart"
 )
 
@@ -17,8 +18,9 @@ func UploadImage(ctx *server.Context, file multipart.File, image *multipart.File
 
 	src := fullPath + "/" + imageName
 	if !upload.CheckImageExt(imageName) || !upload.CheckImageSize(file) {
-		logging.Error("ext or size of image is error, image:%v", image)
-		return ctx.ParamsError()
+		err := errors.Errorf("ext or size of image is error, image:%v", image)
+		logging.Error(err)
+		return ctx.ParamsError(err.Error())
 	}
 
 	err := upload.CheckImage(fullPath)

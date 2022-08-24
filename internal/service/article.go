@@ -15,8 +15,8 @@ import (
 const QRCODE_URL = "https://github.com/WeCanRun/gin-blog%E7%B3%BB%E5%88%97%E7%9B%AE%E5%BD%95"
 
 func GetArticles(ctx *server.Context, req *dto.GetArticlesRequest) (resp dto.GetArticlesResponse, err error) {
-	pageNum := util.GetPage(ctx)
-	pageSize := util.GetPageSize(ctx)
+	pageNum := util.GetPage(ctx.Context)
+	pageSize := util.GetPageSize(ctx.Context)
 	articles, err := model.GetArticles(ctx.Request.Context(), pageNum, pageSize)
 	if err != nil {
 		return

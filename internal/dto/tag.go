@@ -16,21 +16,21 @@ type GetTagsResponse struct {
 }
 
 type AddTagRequest struct {
-	Name      string `json:"name" binding:"required" minLength:"4" maxLength:"16" example:"random string"`
-	CreatedBy string `json:"created_by" mininum:"1" default:"2"`
-	State     int    `json:"state" mininum:"0" default:"1"`
+	Name      string `json:"name" binding:"required, min=4, max=16" minLength:"4" maxLength:"16" example:"random string"`
+	CreatedBy string `json:"created_by" binding:"required, min=3, max=100"`
+	State     int    `json:"state" binding:"oneof=0 1"`
 }
 
 type EditRequest struct {
-	ID        uint   `json:"id" binding:"required"`
-	Name      string `json:"name"`
-	UpdatedBy string `json:"update_by"`
-	State     int    `json:"state"`
+	ID        uint   `json:"id" binding:"required,gte=1"`
+	Name      string `json:"name" binding:"required, min=4, max=16"`
+	UpdatedBy string `json:"update_by" binding:"required, min=3, max=100"`
+	State     int    `json:"state" binding:"oneof=0 1"`
 }
 
 type ExportTagsRequest struct {
-	Name  string `json:"name"`
-	State int    `json:"state"`
+	Name  string `json:"name" binding:"required,min=3,max=100"`
+	State int    `json:"state" binding:"oneof=0 1"`
 }
 
 type ExportTagsResponse struct {

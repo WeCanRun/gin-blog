@@ -15,7 +15,7 @@ func GetTags(ctx *server.Context) error {
 	req := new(dto.GetTagsRequest)
 	if err := ctx.Bind(&req); err != nil {
 		logging.Error("bind param err, %v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 	data, err := service.GetTags(ctx, req)
 	if err != nil {
@@ -43,7 +43,7 @@ func GetTag(ctx *server.Context) error {
 	id, err := strconv.Atoi(idStr)
 	if id <= 0 || err != nil {
 		logging.Error("bind param err, %v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 	tag, err := service.GetTag(ctx, uint(id))
 	if err != nil {
@@ -69,7 +69,7 @@ func AddTag(ctx *server.Context) error {
 	req := new(dto.AddTagRequest)
 	if err := ctx.Bind(req); err != nil {
 		logging.Error("bind param err, %v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 
 	if err := service.AddTag(ctx, req); err != nil {
@@ -87,7 +87,7 @@ func DeleteTag(ctx *server.Context) error {
 	var err error
 	if id, err = strconv.Atoi(idStr); id <= 0 || err != nil {
 		logging.Error("param err, id: %v, err: %v", idStr, err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 
 	if err = service.DeleteTag(ctx, uint(id)); err != nil {
@@ -103,7 +103,7 @@ func EditTag(ctx *server.Context) error {
 	req := new(dto.EditRequest)
 	if err := ctx.Bind(req); err != nil {
 		logging.Error("bind param err, %v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 	if err := service.EditTag(ctx, req); err != nil {
 		logging.Error("services#EditTag fail,%v", err)
@@ -113,16 +113,12 @@ func EditTag(ctx *server.Context) error {
 }
 
 func ExportTags(ctx *server.Context) error {
-	// todo reqDto
 	req := new(dto.ExportTagsRequest)
 	if err := ctx.Bind(req); err != nil {
 		logging.Error("ExportTags | params bind fail,err:%v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
-	if req.Name == "" || len(req.Name) <= 0 {
-		logging.Error("ExportTags | 参数错误, req:%v", req)
-		return ctx.ParamsError()
-	}
+
 	resp, err := service.ExportTags(ctx, req.Name, req.State)
 	if err != nil {
 		logging.Error("ExportTags | ExportTags fail, err:%v", err)
@@ -136,7 +132,7 @@ func ImportTag(ctx *server.Context) error {
 	file, _, err := ctx.Request.FormFile("file")
 	if err != nil {
 		logging.Error("%v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 
 	if err := service.ImportTags(ctx, file); err != nil {

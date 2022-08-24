@@ -15,7 +15,7 @@ func GetArticles(ctx *server.Context) error {
 	req := new(dto.GetArticlesRequest)
 	if err := ctx.Bind(req); err != nil {
 		logging.Error("bind param err: %v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err.Error())
 	}
 	resp, err := service.GetArticles(ctx, req)
 	if err != nil {
@@ -34,7 +34,7 @@ func GetArticle(ctx *server.Context) error {
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if id <= 0 || err != nil {
 		logging.Error("bind param err, %v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError("")
 	}
 	article, err := service.GetArticle(ctx, uint(id))
 	if err != nil {
@@ -51,11 +51,11 @@ func GetArticle(ctx *server.Context) error {
 func AddArticle(ctx *server.Context) error {
 	req := new(dto.AddArticleRequest)
 	if err := ctx.Bind(req); err != nil {
-		logging.Error("bind param err, %v", err)
-		return ctx.ParamsError()
+		logging.Errorf("bind param err, %v", err)
+		return ctx.ParamsError(err.Error())
 	}
 	if err := service.AddArticle(ctx, req); err != nil {
-		logging.Error("services#AddArticle fail,%v", err)
+		logging.Errorf("services#AddArticle fail,%v", err)
 		return ctx.ServerError("新增文章失败")
 	}
 	return ctx.Success("新增文章成功")
@@ -66,7 +66,7 @@ func EditArticle(ctx *server.Context) error {
 	req := new(dto.EditArticleRequest)
 	if err := ctx.Bind(req); err != nil {
 		logging.Error("bind param err, %v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 	if err := service.EditArticle(ctx, req); err != nil {
 		logging.Error("services#EditArticle fail,%v", err)
@@ -81,7 +81,7 @@ func DeleteArticle(ctx *server.Context) error {
 	id, err := strconv.Atoi(idStr)
 	if err != nil || id <= 0 {
 		logging.Error("bind param err, %v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 	if err := service.DeleteArticle(ctx, uint(id)); err != nil {
 		logging.Error("services#DeleteArticle fail,%v", err)
@@ -95,13 +95,9 @@ func GenerateArticlePoster(ctx *server.Context) error {
 	req := new(dto.GenArticlePosterReq)
 	if err := ctx.Bind(req); err != nil {
 		logging.Error("GenerateArticlePoster | bind params fail, err:%v", err)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 
-	if req.Width < 33 || req.Height < 33 {
-		logging.Error("GenerateArticlePoster | 参数错误，req:%v", req)
-		return ctx.ParamsError()
-	}
 	data, err := service.GenPoster(req)
 	if err != nil {
 		logging.Error("GenerateArticlePoster#service.GenPoster() | 生成海报失败,err:%v", err)

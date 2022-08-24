@@ -4,7 +4,10 @@ import (
 	"github.com/WeCanRun/gin-blog/global/constants"
 	"github.com/WeCanRun/gin-blog/global/errcode"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
+	"github.com/WeCanRun/gin-blog/pkg/util"
 	"github.com/gin-gonic/gin"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
@@ -53,13 +56,35 @@ func (ctx *Context) ServerError(data interface{}) *errcode.InternalError {
 	return err
 }
 
-func (ctx *Context) ParamsError() *errcode.InternalError {
+func (ctx *Context) ParamsError(data interface{}) *errcode.InternalError {
 	err := errcode.BadRequest
+	err.Data = data
 	return err
 }
 
 func (ctx *Context) Logger() *logging.Logger {
 	return ctx.logger
+}
+
+func (ctx *Context) Bind(v interface{}) errcode.ValiadErrors {
+	var res errcode.ValiadErrors
+	if err := ctx.Context.Bind(v); err != nil {
+		value := ctx.Value(constants.Trans)
+		trans, _ := value.(ut.Translator)
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			return res
+		}
+		for k, v := range errs.Translate(trans) {
+			res = append(res, &errcode.ValiadError{
+				Key: k,
+				Msg: util.CamelCaseToUnderscore(v),
+			})
+		}
+
+		return res
+	}
+	return nil
 }
 
 type Handler func(*Context) error
@@ -87,6 +112,7 @@ func HandlerWarp(handler Handler) gin.HandlerFunc {
 				constants.LogFieldSpanId:  ctx.Request.Header.Get(constants.SpanId)}),
 		}
 
+		customCtx.Writer.Header().Set("content-type", "text/json; charset=utf-8")
 		if err := handler(customCtx); err == nil {
 			customCtx.JSON(errcode.Success.StatusCode(), errcode.Success)
 

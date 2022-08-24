@@ -6,4 +6,6 @@ const (
 
 	TraceId         = "X-Request-TraceId"
 	LogFieldTraceId = "trace_id"
+
+	Trans = "trans"
 )

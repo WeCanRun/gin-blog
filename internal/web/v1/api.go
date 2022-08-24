@@ -19,7 +19,7 @@ func GetToken(ctx *server.Context) error {
 	password := ctx.Query("password")
 	if len(username) > 50 || len(username) <= 0 || len(password) > 50 || len(password) < 6 {
 		logging.Error("GetToken params err")
-		return ctx.ParamsError()
+		return ctx.ParamsError("")
 	}
 	err, token := service.GetTokenWithAuth(ctx, username, password)
 	if len(token) <= 0 {
@@ -33,7 +33,7 @@ func UploadImage(ctx *server.Context) error {
 	file, image, err := ctx.Request.FormFile("image")
 	if err != nil || image == nil {
 		logging.Error("param err: %v, image:%v", err, image)
-		return ctx.ParamsError()
+		return ctx.ParamsError(err)
 	}
 
 	return service.UploadImage(ctx, file, image)

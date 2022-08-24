@@ -2,19 +2,19 @@ package util
 
 import (
 	"github.com/WeCanRun/gin-blog/global"
-	"github.com/WeCanRun/gin-blog/internal/server"
+	"github.com/gin-gonic/gin"
 )
 import "github.com/unknwon/com"
 
-func GetPage(c *server.Context) (result uint) {
-	page, _ := com.StrTo(c.Query("page")).Int()
+func GetPage(c *gin.Context) (result uint) {
+	page, _ := com.StrTo(c.Query("page_num")).Int()
 	if page > 0 {
 		result = uint((page - 1)) * global.Setting.APP.PageSize
 	}
 	return
 }
 
-func GetPageSize(c *server.Context) (res uint) {
+func GetPageSize(c *gin.Context) (res uint) {
 	size, _ := com.StrTo(c.Query("page_size")).Int()
 	if size <= 0 {
 		res = global.Setting.APP.DefaultPageSize

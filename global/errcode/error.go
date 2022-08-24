@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/WeCanRun/gin-blog/pkg/logging"
 	"net/http"
+	"strings"
 )
 
 var codes = map[int]*InternalError{}
@@ -59,4 +60,27 @@ func GetMsg(code int) string {
 		return e.Msg
 	}
 	return ""
+}
+
+type ValiadError struct {
+	Key string
+	Msg string
+}
+
+type ValiadErrors []*ValiadError
+
+func (v *ValiadError) Error() string {
+	return v.Msg
+}
+
+func (v ValiadErrors) Error() string {
+	return strings.Join(v.Errors(), ",")
+}
+
+func (v ValiadErrors) Errors() []string {
+	var errs []string
+	for _, err := range v {
+		errs = append(errs, err.Error())
+	}
+	return errs
 }
