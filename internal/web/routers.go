@@ -29,8 +29,8 @@ import (
 func InitRouters(router *server.RouterWarp) {
 
 	// use middleware
-	router.Use(middleware.AccessLog())
 	router.Use(middleware.Recovery())
+	router.Use(middleware.AccessLog())
 	router.Use(middleware.Translations())
 	router.Use(middleware.Tracer())
 	router.Use(middleware.Limiter(limiter.NewMethodLimiter().AddBuckets(limiter.BucketRule{
